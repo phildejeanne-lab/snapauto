@@ -73,11 +73,19 @@ export default function ConfidentialitePage() {
               <span className="font-medium text-slate-800">Transaction</span> : prix, mode de
               paiement, date.
             </li>
+            <li>
+              <span className="font-medium text-slate-800">Pièces jointes au dossier</span> :
+              documents que le professionnel choisit d'archiver (permis, justificatif de domicile,
+              mandat…), stockés de façon sécurisée et cloisonnée par organisation.
+            </li>
           </ul>
           <p className="rounded-lg bg-slate-50 px-3 py-2">
-            📷 <span className="font-medium text-slate-800">Les photos ne sont pas conservées.</span>{" "}
-            Elles sont analysées pour en extraire les informations, puis écartées. Seules les
-            données extraites sont enregistrées.
+            📷 <span className="font-medium text-slate-800">Les photos d'analyse ne sont pas
+            conservées.</span>{" "}
+            La carte grise et la pièce d'identité photographiées pour le pré-remplissage sont
+            analysées puis écartées ; seules les données extraites sont enregistrées. Les pièces que
+            le professionnel <em>joint volontairement</em> au dossier sont, elles, conservées (voir
+            durées ci-dessous).
           </p>
         </Section>
 
@@ -123,6 +131,13 @@ export default function ConfidentialitePage() {
               nécessaire à l'opération et aux obligations comptables. Un dossier peut être supprimé
               par le professionnel à tout moment ; l'inscription minimale au livre de police est
               alors conservée pour répondre à l'obligation légale.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Pièces jointes au dossier</span>{" "}
+              (permis, justificatif de domicile…) : conservées le temps de l'établissement de la
+              carte grise, puis <span className="font-medium">effacées automatiquement environ
+              2 mois après l'opération</span>. Elles peuvent aussi être supprimées manuellement à
+              tout moment.
             </li>
             <li>
               <span className="font-medium text-slate-800">Compte</span> : conservé tant que le

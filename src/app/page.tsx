@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/AppHeader";
+import { DossierDocuments } from "@/components/DossierDocuments";
 import type { CerfaDossier, Person } from "@/lib/cerfa/types";
 
 type ExtractResponse = { dossier: CerfaDossier; error?: string };
@@ -358,6 +359,8 @@ export default function Home() {
               </a>
             )}
           </div>
+
+          {savedId && <DossierDocuments dossierId={savedId} />}
         </section>
       )}
 
@@ -559,6 +562,14 @@ export default function Home() {
               </Link>
             )}
           </div>
+
+          {savedId ? (
+            <DossierDocuments dossierId={savedId} />
+          ) : (
+            <p className="mt-5 border-t border-slate-100 pt-4 text-xs text-slate-400">
+              Enregistre le dossier pour y joindre des pièces (permis, justificatif de domicile…).
+            </p>
+          )}
         </section>
       )}
 
