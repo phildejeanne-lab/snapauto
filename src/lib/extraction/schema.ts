@@ -23,6 +23,7 @@ export const carteGriseSchema = z.object({
   fiscal_power: f, // P.6 puissance administrative (CV)
   seats: f, // S.1 nombre de places
   co2: f, // V.7 CO2 (g/km)
+  genre: f, // J.1 genre national (VP, CTTE…)
   formula_number: f, // n° de formule du certificat (ex. 2024FD82667)
 });
 export type CarteGrise = z.infer<typeof carteGriseSchema>;
@@ -36,7 +37,10 @@ export const cniSchema = z.object({
   birth_place: f, // lieu de naissance (commune)
   sex: f, // M / F
   nationality: f,
+  document_type: f, // nature du titre : "CNI", "Passeport", "Permis de conduire"
   document_number: f, // n° du titre
+  issuing_authority: f, // autorité de délivrance (ex. Préfecture de la Moselle)
+  issue_date: f, // date de délivrance
   address: f, // adresse postale (présente sur ANCIENNE CNI ; absente sur la nouvelle 2021)
   mrz: f, // zone lisible machine (brute) si présente
 });

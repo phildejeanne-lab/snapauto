@@ -91,8 +91,15 @@ async function recordLivrePolice(
     immat: v.immat ?? null,
     date_immat: v.dateB ?? null,
     km: v.km ?? null,
+    genre: v.genre ?? null,
+    couleur: v.couleur ?? null,
+    prix: dossier.cession.prix ?? null,
+    paiement: dossier.cession.paiement ?? null,
     person_name: p?.name ?? null,
     person_address: address,
+    id_type: p?.idType ?? null,
+    id_number: p?.idNumber ?? null,
+    id_authority: p?.idAuthority ?? null,
   });
 }
 
@@ -441,17 +448,22 @@ export default function Home() {
             <Field label="Dénomination (D.3)" value={dossier.vehicle.denom} onChange={(v) => upd((d) => (d.vehicle.denom = v))} />
             <Field label="Kilométrage" value={dossier.vehicle.km} onChange={(v) => upd((d) => (d.vehicle.km = v))} />
             <Field label="N° de formule" value={dossier.vehicle.formule} onChange={(v) => upd((d) => (d.vehicle.formule = v))} />
+            <Field label="Genre (J.1)" value={dossier.vehicle.genre} onChange={(v) => upd((d) => (d.vehicle.genre = v))} placeholder="VP, CTTE…" />
+            <Field label="Couleur" value={dossier.vehicle.couleur} onChange={(v) => upd((d) => (d.vehicle.couleur = v))} placeholder="Livre de police" />
           </Group>
 
           <PersonGroup
             title="Vendeur (ancien propriétaire)"
             person={dossier.cession.seller}
+            birth={operation === "achat"}
+            idDoc={operation === "achat"}
             onField={(k, v) => upd((d) => ((d.cession.seller[k] as string | null) = v))}
           />
           <PersonGroup
             title="Acheteur (nouveau propriétaire)"
             person={dossier.cession.buyer}
             birth
+            idDoc={operation === "vente"}
             onField={(k, v) => upd((d) => ((d.cession.buyer[k] as string | null) = v))}
           />
 
@@ -463,6 +475,33 @@ export default function Home() {
             <Field label="Le (vendeur)" value={dossier.cession.dateFaitSeller} onChange={(v) => upd((d) => (d.cession.dateFaitSeller = v))} placeholder="JJ/MM/AAAA" />
             <Field label="Fait à (acheteur)" value={dossier.cession.lieuFaitBuyer} onChange={(v) => upd((d) => (d.cession.lieuFaitBuyer = v))} />
             <Field label="Le (acheteur)" value={dossier.cession.dateFaitBuyer} onChange={(v) => upd((d) => (d.cession.dateFaitBuyer = v))} placeholder="JJ/MM/AAAA" />
+          </Group>
+
+          <Group title="Transaction (livre de police)">
+            <Field
+              label={operation === "achat" ? "Prix d'achat (€)" : "Prix de vente TTC (€)"}
+              value={dossier.cession.prix}
+              onChange={(v) => upd((d) => (d.cession.prix = v))}
+            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-slate-500">Mode de paiement</span>
+              <select
+                value={dossier.cession.paiement ?? ""}
+                onChange={(e) => upd((d) => (d.cession.paiement = e.target.value || null))}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              >
+                <option value="">—</option>
+                <option>Virement</option>
+                <option>Chèque</option>
+                <option>Carte bancaire</option>
+                <option>Espèces</option>
+              </select>
+            </label>
+            {dossier.cession.paiement === "Espèces" && (
+              <p className="text-xs text-amber-700 sm:col-span-2 lg:col-span-3">
+                ⚠️ Paiement en espèces limité à 1 000 € (et interdit entre professionnels).
+              </p>
+            )}
           </Group>
 
           <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -578,7 +617,7 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
   );
 }
 
-function PersonGroup({ title, person, birth, onField }: { title: string; person: Person; birth?: boolean; onField: (k: keyof Person, v: string | null) => void }) {
+function PersonGroup({ title, person, birth, idDoc, onField }: { title: string; person: Person; birth?: boolean; idDoc?: boolean; onField: (k: keyof Person, v: string | null) => void }) {
   return (
     <Group title={title}>
       <Field label="Nom et prénom" value={person.name} onChange={(v) => onField("name", v)} />
@@ -589,6 +628,9 @@ function PersonGroup({ title, person, birth, onField }: { title: string; person:
       <Field label="Nom de voie" value={person.nomVoie} onChange={(v) => onField("nomVoie", v)} />
       <Field label="Code postal" value={person.cp} onChange={(v) => onField("cp", v)} />
       <Field label="Commune" value={person.commune} onChange={(v) => onField("commune", v)} />
+      {idDoc && <Field label="Pièce d'identité" value={person.idType} onChange={(v) => onField("idType", v)} placeholder="CNI, Passeport…" />}
+      {idDoc && <Field label="N° de la pièce" value={person.idNumber} onChange={(v) => onField("idNumber", v)} />}
+      {idDoc && <Field label="Autorité de délivrance" value={person.idAuthority} onChange={(v) => onField("idAuthority", v)} />}
     </Group>
   );
 }

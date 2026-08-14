@@ -28,6 +28,13 @@ const emptyPro = (): Person => ({
 const sexeFrom = (cni: Cni | null): "M" | "F" | null =>
   cni?.sex === "M" || cni?.sex === "F" ? cni.sex : null;
 
+// Pièce d'identité (pour le livre de police)
+const idFrom = (cni: Cni | null) => ({
+  idType: cni?.document_type ?? null,
+  idNumber: cni?.document_number ?? null,
+  idAuthority: cni?.issuing_authority ?? null,
+});
+
 /**
  * Construit un dossier selon l'opération :
  * - achat : le pro ACHÈTE à un particulier → vendeur = particulier (carte grise + CNI), acheteur = pro.
@@ -49,6 +56,7 @@ export function buildDossierFromExtraction(
     birthDate: cni?.birth_date ?? null,
     birthPlace: cni?.birth_place ?? null,
     ...parseAddress(cg?.holder_address),
+    ...idFrom(cni),
   };
 
   // Particulier identifié par la CNI (cas VENTE : c'est l'acheteur).
@@ -60,6 +68,7 @@ export function buildDossierFromExtraction(
     birthDate: cni?.birth_date ?? null,
     birthPlace: cni?.birth_place ?? null,
     ...parseAddress(cni?.address),
+    ...idFrom(cni),
   };
 
   const seller = operation === "achat" ? particulierFromCG : proPerson;
@@ -77,6 +86,8 @@ export function buildDossierFromExtraction(
       km: null,
       formule: cg?.formula_number ?? null,
       certImmat: "oui",
+      genre: cg?.genre ?? null,
+      couleur: null,
     },
     cession: {
       destination: "cession",

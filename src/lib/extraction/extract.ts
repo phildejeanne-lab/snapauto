@@ -40,12 +40,16 @@ const PROMPTS: Record<ExtractionKind, string> = {
     "- ptac = F.2\n- mass_service = G.1\n- displacement_cc = P.1\n- power_kw = P.2\n" +
     "- fuel = P.3 (garder le code exact, ex. EH)\n- fiscal_power = P.6\n- seats = S.1\n" +
     "- co2 = V.7 (NE PAS confondre avec Y.6)\n" +
+    "- genre = J.1 (genre national, ex. VP, CTTE, CAM)\n" +
     "- formula_number = numéro de formule du certificat (ex. 2024FD82667, format AAAA + lettres/chiffres), imprimé sur le document (souvent près du code-barres ou sur le coupon détachable en bas)\n" +
     "Mets null pour tout champ absent ou illisible.",
   cni:
     "Tu reçois la photo d'une pièce d'identité française : carte nationale d'identité (ancien ou nouveau format) OU passeport. " +
     "Extrais l'état civil du titulaire. Utilise la zone MRZ (2 lignes sur un passeport, 3 lignes sur la nouvelle CNI) si présente pour fiabiliser. " +
+    "`document_type` = nature du titre : \"CNI\", \"Passeport\" ou \"Permis de conduire\". " +
     "`document_number` = n° de la CNI ou n° du passeport selon le document. " +
+    "`issuing_authority` = autorité de délivrance si visible (ex. \"Préfecture de la Moselle\", \"Ministère de l'Intérieur\"). " +
+    "`issue_date` = date de délivrance si visible. " +
     "Pour `address` : recopie l'adresse postale UNIQUEMENT si elle figure sur le document (ancienne CNI). " +
     "Absente sur la nouvelle CNI 2021 ET sur les passeports → mets null. " +
     "Recopie exactement ; mets null pour tout champ absent ou illisible.",

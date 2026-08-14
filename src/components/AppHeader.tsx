@@ -46,7 +46,7 @@ export function AppHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/85 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/85 backdrop-blur print:hidden">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
         <Link href="/" className="shrink-0 transition hover:opacity-80">
           <Brand size={30} />

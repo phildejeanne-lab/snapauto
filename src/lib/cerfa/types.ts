@@ -14,6 +14,10 @@ export type Person = {
   nomVoie?: string | null;
   cp?: string | null;
   commune?: string | null;
+  // Pièce d'identité (livre de police)
+  idType?: string | null; // CNI, Passeport, Permis
+  idNumber?: string | null;
+  idAuthority?: string | null;
 };
 
 export type Vehicle = {
@@ -26,6 +30,8 @@ export type Vehicle = {
   km?: string | null;
   formule?: string | null; // n° de formule
   certImmat?: "oui" | "non" | null;
+  genre?: string | null; // J.1 (VP, CTTE…)
+  couleur?: string | null; // saisie manuelle (absent de la carte grise)
 };
 
 export type Cession = {
@@ -33,6 +39,8 @@ export type Cession = {
   date?: string | null; // date de cession
   heure?: string | null;
   min?: string | null;
+  prix?: string | null; // prix d'achat (achat) / revente TTC (vente)
+  paiement?: string | null; // mode de paiement / règlement
   seller: Person; // ancien propriétaire
   buyer: Person; // nouveau propriétaire
   lieuFaitSeller?: string | null;
