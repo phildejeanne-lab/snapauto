@@ -16,7 +16,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-const CONTACT = "[email de contact / DPO]";
+const CONTACT = "contact@snapauto.fr";
 
 export default function ConfidentialitePage() {
   return (
@@ -39,11 +39,6 @@ export default function ConfidentialitePage() {
         <p className="mt-2 text-sm text-slate-500">
           Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
         </p>
-
-        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          ⚠️ Modèle à adapter à votre situation et à faire valider par un professionnel du droit
-          avant mise en ligne définitive.
-        </div>
 
         <Section title="1. Qui fait quoi ?">
           <p>

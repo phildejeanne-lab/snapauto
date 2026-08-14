@@ -16,16 +16,17 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-// Remplace les [crochets] par tes informations réelles.
 const EDITEUR = {
-  raisonSociale: "[Raison sociale]",
-  forme: "[SAS / SARL / EI…]",
-  capital: "[capital social]",
-  siren: "[SIREN / RCS]",
-  tva: "[N° TVA intracommunautaire]",
-  siege: "[Adresse du siège social]",
-  email: "[email de contact]",
-  directeur: "[Nom du directeur de la publication]",
+  nom: "Philippe COLLIN",
+  forme: "Entrepreneur individuel (micro-entreprise)",
+  nomCommercial: "SnapAuto",
+  siren: "104 635 560",
+  siret: "10463556000014",
+  registre: "Registre National des Entreprises (RNE)",
+  tva: "TVA non applicable, article 293 B du CGI (franchise en base)",
+  siege: "2 route d'Ugny, 54870 Cons-la-Grandville, France",
+  email: "contact@snapauto.fr",
+  directeur: "Philippe Collin",
 };
 
 export default function MentionsLegalesPage() {
@@ -48,17 +49,14 @@ export default function MentionsLegalesPage() {
           Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
         </p>
 
-        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          ⚠️ Modèle à compléter avec vos informations légales et à faire valider par un
-          professionnel du droit avant mise en ligne définitive.
-        </div>
-
         <section className="mt-8 space-y-3">
           <h2 className="text-lg font-semibold text-slate-900">Éditeur du site</h2>
-          <Field label="Dénomination">{EDITEUR.raisonSociale} ({EDITEUR.forme})</Field>
-          <Field label="Capital social">{EDITEUR.capital}</Field>
-          <Field label="Immatriculation">{EDITEUR.siren}</Field>
-          <Field label="N° TVA">{EDITEUR.tva}</Field>
+          <Field label="Éditeur">{EDITEUR.nom} — {EDITEUR.forme}</Field>
+          <Field label="Nom commercial">{EDITEUR.nomCommercial}</Field>
+          <Field label="SIREN">{EDITEUR.siren}</Field>
+          <Field label="SIRET">{EDITEUR.siret}</Field>
+          <Field label="Immatriculation">{EDITEUR.registre}</Field>
+          <Field label="TVA">{EDITEUR.tva}</Field>
           <Field label="Siège social">{EDITEUR.siege}</Field>
           <Field label="Contact">{EDITEUR.email}</Field>
           <Field label="Directeur de la publication">{EDITEUR.directeur}</Field>
