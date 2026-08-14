@@ -70,6 +70,7 @@ export default function LivrePolicePage() {
 
   return (
     <>
+      <style>{`@media print { @page { size: A4 landscape; margin: 10mm; } }`}</style>
       <AppHeader />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-5">
         <div className="mb-1 flex flex-wrap items-center justify-between gap-3 print:hidden">
