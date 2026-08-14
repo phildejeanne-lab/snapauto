@@ -13,6 +13,14 @@ type Row = {
   status: string | null;
   created_at: string;
   linked_dossier_id: string | null;
+  prix: string | null;
+};
+
+const fmtPrix = (p: string | null) => {
+  if (!p) return null;
+  const n = Number(String(p).replace(/[^\d.,]/g, "").replace(",", "."));
+  if (!Number.isFinite(n) || n === 0) return null;
+  return n.toLocaleString("fr-FR") + " €";
 };
 
 export default function DossiersPage() {
@@ -24,7 +32,7 @@ export default function DossiersPage() {
       const supabase = createClient();
       const { data, error } = await supabase
         .from("dossiers")
-        .select("id, label, operation, immat, status, created_at, linked_dossier_id")
+        .select("id, label, operation, immat, status, created_at, linked_dossier_id, prix:data->cession->>prix")
         .order("created_at", { ascending: false });
       if (error) setError(error.message);
       else setRows((data ?? []) as Row[]);
@@ -84,6 +92,11 @@ export default function DossiersPage() {
                   {r.linked_dossier_id && " · lié à une reprise"}
                 </p>
               </div>
+              {fmtPrix(r.prix) && (
+                <span className="shrink-0 whitespace-nowrap text-sm font-semibold text-slate-800">
+                  {fmtPrix(r.prix)}
+                </span>
+              )}
               <span className="hidden shrink-0 text-sm font-medium text-brand-600 sm:inline">Rouvrir →</span>
             </Link>
             <button
