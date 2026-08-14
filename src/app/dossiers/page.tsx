@@ -68,10 +68,10 @@ export default function DossiersPage() {
           <li key={r.id} className="flex items-stretch gap-2">
             <Link
               href={`/?dossier=${r.id}`}
-              className="flex flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-brand-300 hover:shadow-sm"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-brand-300 hover:shadow-sm"
             >
               <span
-                className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                className={`shrink-0 rounded-md px-2 py-1 text-xs font-semibold ${
                   r.operation === "achat" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
                 }`}
               >
@@ -79,17 +79,18 @@ export default function DossiersPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-slate-800">{r.label || "Dossier"}</p>
-                <p className="text-xs text-slate-500">
+                <p className="truncate text-xs text-slate-500">
                   {r.immat ?? "—"} · {new Date(r.created_at).toLocaleDateString("fr-FR")}
                   {r.linked_dossier_id && " · lié à une reprise"}
                 </p>
               </div>
-              <span className="text-sm text-brand-600">Rouvrir →</span>
+              <span className="hidden shrink-0 text-sm font-medium text-brand-600 sm:inline">Rouvrir →</span>
             </Link>
             <button
               onClick={() => remove(r.id)}
               title="Supprimer"
-              className="rounded-xl border border-slate-200 px-3 text-sm text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+              aria-label="Supprimer"
+              className="shrink-0 rounded-xl border border-slate-200 px-3 text-sm text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
             >
               ✕
             </button>
