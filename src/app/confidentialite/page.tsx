@@ -1,0 +1,164 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { Brand } from "@/components/Logo";
+import { Footer } from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Politique de confidentialité — SnapAuto",
+};
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-8 space-y-3">
+      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed text-slate-600">{children}</div>
+    </section>
+  );
+}
+
+const CONTACT = "[email de contact / DPO]";
+
+export default function ConfidentialitePage() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <header className="border-b border-slate-200/70 px-4 py-3">
+        <div className="mx-auto flex max-w-3xl items-center justify-between">
+          <Link href="/" className="transition hover:opacity-80">
+            <Brand size={28} />
+          </Link>
+          <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+            ← Retour
+          </Link>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          Politique de confidentialité
+        </h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
+        </p>
+
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          ⚠️ Modèle à adapter à votre situation et à faire valider par un professionnel du droit
+          avant mise en ligne définitive.
+        </div>
+
+        <Section title="1. Qui fait quoi ?">
+          <p>
+            SnapAuto est un outil destiné aux professionnels de l'automobile pour établir les
+            documents de cession de véhicules d'occasion (Cerfa) à partir de photos de documents,
+            et tenir le livre de police.
+          </p>
+          <p>
+            <span className="font-medium text-slate-800">Le professionnel utilisateur</span>{" "}
+            (garage, négociant, mandataire) est <span className="font-medium">responsable de
+            traitement</span> des données de ses clients qu'il saisit dans l'outil.
+          </p>
+          <p>
+            <span className="font-medium text-slate-800">SnapAuto</span> agit en qualité de{" "}
+            <span className="font-medium">sous-traitant</span> : il traite ces données uniquement
+            pour fournir le service, conformément aux instructions du professionnel.
+          </p>
+        </Section>
+
+        <Section title="2. Données traitées">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <span className="font-medium text-slate-800">Compte professionnel</span> : email,
+              informations de l'entreprise (raison sociale, adresse, SIREN…).
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Données de dossier</span> : informations
+              du véhicule (immatriculation, VIN, caractéristiques) et des parties (nom, adresse,
+              pièce d'identité), extraites des documents photographiés.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Transaction</span> : prix, mode de
+              paiement, date.
+            </li>
+          </ul>
+          <p className="rounded-lg bg-slate-50 px-3 py-2">
+            📷 <span className="font-medium text-slate-800">Les photos ne sont pas conservées.</span>{" "}
+            Elles sont analysées pour en extraire les informations, puis écartées. Seules les
+            données extraites sont enregistrées.
+          </p>
+        </Section>
+
+        <Section title="3. Finalités et base légale">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>Générer les documents de cession (Cerfa) — exécution du service.</li>
+            <li>
+              Tenir le livre de police — <span className="font-medium">obligation légale</span>{" "}
+              (registre des véhicules d'occasion).
+            </li>
+            <li>Gérer les comptes et sécuriser l'accès — intérêt légitime.</li>
+          </ul>
+        </Section>
+
+        <Section title="4. Destinataires et sous-traitants">
+          <p>Pour fonctionner, le service s'appuie sur des prestataires techniques :</p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <span className="font-medium text-slate-800">Anthropic</span> — analyse des documents
+              (extraction des informations depuis les photos). Les images ne sont pas utilisées
+              pour entraîner de modèles.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Supabase</span> — hébergement de la base
+              de données (Union européenne) et authentification.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Vercel</span> — hébergement de
+              l'application.
+            </li>
+          </ul>
+          <p>Aucune donnée n'est vendue ni cédée à des tiers à des fins commerciales.</p>
+        </Section>
+
+        <Section title="5. Durée de conservation">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <span className="font-medium text-slate-800">Livre de police</span> : conservé
+              conformément à l'obligation légale applicable aux registres de véhicules d'occasion.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Dossiers</span> : conservés le temps
+              nécessaire à l'opération et aux obligations comptables. Un dossier peut être supprimé
+              par le professionnel à tout moment ; l'inscription minimale au livre de police est
+              alors conservée pour répondre à l'obligation légale.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Compte</span> : conservé tant que le
+              compte est actif.
+            </li>
+          </ul>
+        </Section>
+
+        <Section title="6. Vos droits">
+          <p>
+            Conformément au RGPD, les personnes concernées disposent d'un droit d'accès, de
+            rectification, d'effacement, de limitation et d'opposition. Ces droits s'exercent
+            auprès du professionnel responsable de traitement (le garage), ou via SnapAuto qui
+            relaiera la demande.
+          </p>
+          <p>
+            Contact : <span className="font-medium text-slate-800">{CONTACT}</span>. En cas de
+            désaccord, un recours peut être formé auprès de la CNIL (cnil.fr).
+          </p>
+        </Section>
+
+        <Section title="7. Sécurité">
+          <p>
+            Les données sont chiffrées au repos et en transit, hébergées dans l'Union européenne, et
+            l'accès est cloisonné par organisation. Le livre de police est inscrit en mode
+            inaltérable (ni modification ni suppression possibles).
+          </p>
+        </Section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

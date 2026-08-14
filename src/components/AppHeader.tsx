@@ -78,6 +78,14 @@ export function AppHeader() {
       {open && (
         <nav className="flex flex-col gap-1 border-t border-slate-200/70 bg-white px-4 py-3 text-sm sm:hidden">
           {links}
+          <div className="mt-1 flex gap-3 border-t border-slate-100 px-3 pt-2 text-xs text-slate-400">
+            <Link href="/mentions-legales" onClick={() => setOpen(false)} className="hover:text-slate-600">
+              Mentions légales
+            </Link>
+            <Link href="/confidentialite" onClick={() => setOpen(false)} className="hover:text-slate-600">
+              Confidentialité
+            </Link>
+          </div>
         </nav>
       )}
     </header>

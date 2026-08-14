@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Logo } from "@/components/Logo";
 
@@ -55,6 +56,13 @@ export default function LoginPage() {
           <form onSubmit={sendLink} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/50">
             <h2 className="mb-1 text-lg font-semibold text-slate-900">Connexion</h2>
             <p className="mb-4 text-sm text-slate-500">Reçois un lien de connexion par email — sans mot de passe.</p>
+            <p className="mb-4 text-xs text-slate-400">
+              En vous connectant, vous acceptez notre{" "}
+              <Link href="/confidentialite" className="text-brand-600 hover:underline">
+                politique de confidentialité
+              </Link>
+              .
+            </p>
             <input
               type="email"
               required
@@ -76,6 +84,15 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-xs text-slate-400">
           Réservé aux professionnels de l'automobile.
+        </p>
+        <p className="mt-3 text-center text-xs text-slate-400">
+          <Link href="/mentions-legales" className="hover:text-slate-600">
+            Mentions légales
+          </Link>
+          <span className="mx-2 text-slate-300">·</span>
+          <Link href="/confidentialite" className="hover:text-slate-600">
+            Confidentialité
+          </Link>
         </p>
       </div>
     </main>
