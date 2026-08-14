@@ -15,6 +15,42 @@ const CERFAS = [
   { key: "13750", label: "Demande d'immatriculation" },
 ];
 
+// Crée ou réutilise la fiche client (le particulier de l'opération) et renvoie son id.
+async function upsertContact(
+  supabase: ReturnType<typeof createClient>,
+  orgId: string,
+  dossier: CerfaDossier,
+): Promise<string | null> {
+  const p: Person = dossier.operation === "achat" ? dossier.cession.seller : dossier.cession.buyer;
+  if (!p?.name) return null;
+  const payload = {
+    kind: p.kind === "morale" ? "morale" : "physique",
+    name: p.name,
+    birth_date: p.birthDate ?? null,
+    cp: p.cp ?? null,
+    commune: p.commune ?? null,
+    siren: p.siret ?? null,
+    data: p,
+  };
+  const { data: existing } = await supabase
+    .from("contacts")
+    .select("id")
+    .eq("org_id", orgId)
+    .ilike("name", p.name)
+    .limit(1)
+    .maybeSingle();
+  if (existing?.id) {
+    await supabase.from("contacts").update(payload).eq("id", existing.id);
+    return existing.id;
+  }
+  const { data: created } = await supabase
+    .from("contacts")
+    .insert({ org_id: orgId, ...payload })
+    .select("id")
+    .single();
+  return created?.id ?? null;
+}
+
 export default function Home() {
   const [cgFile, setCgFile] = useState<File | null>(null);
   const [cniFile, setCniFile] = useState<File | null>(null);
@@ -141,6 +177,13 @@ export default function Home() {
     setError(null);
     try {
       const supabase = createClient();
+      const { data: m } = await supabase.from("memberships").select("org_id").limit(1).maybeSingle();
+      if (!m?.org_id) throw new Error("Organisation introuvable.");
+      const orgId = m.org_id;
+
+      // Fiche client (le particulier de l'opération) — créée/réutilisée.
+      const contactId = await upsertContact(supabase, orgId, dossier);
+
       const c = dossier.cession;
       const label =
         [dossier.vehicle.marque, dossier.vehicle.denom, "—", c.buyer.name ?? c.seller.name]
@@ -151,6 +194,7 @@ export default function Home() {
         immat: dossier.vehicle.immat,
         label,
         data: dossier,
+        contact_id: contactId,
       };
 
       if (savedId) {
@@ -158,12 +202,10 @@ export default function Home() {
         const { error } = await supabase.from("dossiers").update(fields).eq("id", savedId);
         if (error) throw error;
       } else {
-        // Création : org_id requis.
-        const { data: m } = await supabase.from("memberships").select("org_id").limit(1).maybeSingle();
-        if (!m?.org_id) throw new Error("Organisation introuvable.");
+        // Création.
         const { data, error } = await supabase
           .from("dossiers")
-          .insert({ org_id: m.org_id, status: "ready", linked_dossier_id: linkTo, ...fields })
+          .insert({ org_id: orgId, status: "ready", linked_dossier_id: linkTo, ...fields })
           .select("id")
           .single();
         if (error) throw error;
