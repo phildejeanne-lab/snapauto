@@ -51,6 +51,51 @@ async function upsertContact(
   return created?.id ?? null;
 }
 
+// Enregistre le mouvement au Livre de Police (une seule fois par dossier).
+async function recordLivrePolice(
+  supabase: ReturnType<typeof createClient>,
+  orgId: string,
+  dossier: CerfaDossier,
+  dossierId: string,
+) {
+  const { data: ex } = await supabase
+    .from("livre_police")
+    .select("id")
+    .eq("dossier_id", dossierId)
+    .limit(1)
+    .maybeSingle();
+  if (ex?.id) return; // déjà au registre
+
+  const { data: last } = await supabase
+    .from("livre_police")
+    .select("num")
+    .eq("org_id", orgId)
+    .order("num", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const num = ((last?.num as number) ?? 0) + 1;
+
+  const v = dossier.vehicle;
+  const p: Person = dossier.operation === "achat" ? dossier.cession.seller : dossier.cession.buyer;
+  const address =
+    [p?.noVoie, p?.typeVoie, p?.nomVoie, p?.cp, p?.commune].filter(Boolean).join(" ") || null;
+
+  await supabase.from("livre_police").insert({
+    org_id: orgId,
+    num,
+    sens: dossier.operation === "achat" ? "entree" : "sortie",
+    dossier_id: dossierId,
+    marque: v.marque ?? null,
+    type: v.type ?? null,
+    vin: v.vin ?? null,
+    immat: v.immat ?? null,
+    date_immat: v.dateB ?? null,
+    km: v.km ?? null,
+    person_name: p?.name ?? null,
+    person_address: address,
+  });
+}
+
 export default function Home() {
   const [cgFile, setCgFile] = useState<File | null>(null);
   const [cniFile, setCniFile] = useState<File | null>(null);
@@ -197,6 +242,7 @@ export default function Home() {
         contact_id: contactId,
       };
 
+      let dossierId = savedId;
       if (savedId) {
         // Mise à jour du dossier existant.
         const { error } = await supabase.from("dossiers").update(fields).eq("id", savedId);
@@ -209,8 +255,12 @@ export default function Home() {
           .select("id")
           .single();
         if (error) throw error;
+        dossierId = data.id;
         setSavedId(data.id);
       }
+
+      // Livre de police : enregistre le mouvement (une seule fois par dossier).
+      if (dossierId) await recordLivrePolice(supabase, orgId, dossier, dossierId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur d'enregistrement.");
     } finally {

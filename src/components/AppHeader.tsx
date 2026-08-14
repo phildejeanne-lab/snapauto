@@ -24,6 +24,13 @@ export function AppHeader() {
         Clients
       </Link>
       <Link
+        href="/livre-police"
+        onClick={() => setOpen(false)}
+        className="rounded-lg px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+      >
+        Livre de police
+      </Link>
+      <Link
         href="/compte"
         onClick={() => setOpen(false)}
         className="rounded-lg px-3 py-2 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
