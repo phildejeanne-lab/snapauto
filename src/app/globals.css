@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f8fc; /* fond doux bleuté */
+  --foreground: #0b132b; /* bleu nuit (texte) */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-jakarta);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Marque — bleu royal du logo (#0F52BA) + accent cyan */
+  --color-brand-50: #eef4fc;
+  --color-brand-100: #d5e5f8;
+  --color-brand-200: #aecbf1;
+  --color-brand-300: #7ba8e6;
+  --color-brand-400: #4380d7;
+  --color-brand-500: #1c60c8;
+  --color-brand-600: #0f52ba;
+  --color-brand-700: #0d459c;
+  --color-brand-800: #0e3a80;
+  --color-brand-900: #10336a;
+  --color-brand-950: #0a1f44;
+
+  --color-accent: #00d2ff;
+  --color-ink: #0b132b;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
 }

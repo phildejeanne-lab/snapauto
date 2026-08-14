@@ -1,0 +1,51 @@
+// Modèle de données pour la génération des Cerfa (indépendant du schéma DB).
+
+export type Person = {
+  kind: "physique" | "morale";
+  sexe?: "M" | "F" | null;
+  name?: string | null; // "NOM PRÉNOM" (physique) ou raison sociale (morale)
+  siret?: string | null;
+  birthDate?: string | null;
+  birthPlace?: string | null;
+  // Adresse décomposée (cases du Cerfa)
+  noVoie?: string | null;
+  extVoie?: string | null;
+  typeVoie?: string | null;
+  nomVoie?: string | null;
+  cp?: string | null;
+  commune?: string | null;
+};
+
+export type Vehicle = {
+  immat?: string | null;
+  vin?: string | null;
+  dateB?: string | null; // 1re immatriculation
+  marque?: string | null;
+  type?: string | null; // D.2
+  denom?: string | null; // D.3
+  km?: string | null;
+  formule?: string | null; // n° de formule
+  certImmat?: "oui" | "non" | null;
+};
+
+export type Cession = {
+  destination?: "cession" | "destruction";
+  date?: string | null; // date de cession
+  heure?: string | null;
+  min?: string | null;
+  seller: Person; // ancien propriétaire
+  buyer: Person; // nouveau propriétaire
+  lieuFaitSeller?: string | null;
+  dateFaitSeller?: string | null;
+  lieuFaitBuyer?: string | null;
+  dateFaitBuyer?: string | null;
+};
+
+export type Operation = "achat" | "vente";
+
+export type CerfaDossier = {
+  operation: Operation; // achat = le pro achète ; vente = le pro vend
+  vehicle: Vehicle;
+  cession: Cession;
+  pro?: Person; // le professionnel — profil de l'org
+};
