@@ -12,6 +12,7 @@ type Entry = {
   recorded_at: string;
   marque: string | null;
   type: string | null;
+  denom: string | null;
   vin: string | null;
   immat: string | null;
   date_immat: string | null;
@@ -54,11 +55,31 @@ const DEST: Record<string, string> = {
 };
 const destLabel = (d: string | null) => (d ? DEST[d] ?? d : "");
 
+function DRow({ label, value }: { label: string; value: React.ReactNode }) {
+  if (value === null || value === undefined || value === "" || value === false) return null;
+  return (
+    <div className="flex justify-between gap-4 py-1.5">
+      <span className="shrink-0 text-xs text-slate-400">{label}</span>
+      <span className="text-right text-sm font-medium text-slate-100">{value}</span>
+    </div>
+  );
+}
+
+function DSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="border-t border-slate-800 py-2 first:border-0">
+      <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-accent">{title}</h4>
+      {children}
+    </div>
+  );
+}
+
 export default function LivrePolicePage() {
   const [rows, setRows] = useState<Entry[] | null>(null);
   const [org, setOrg] = useState<Org | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState("");
+  const [selected, setSelected] = useState<Entry | null>(null);
 
   async function load() {
     const supabase = createClient();
@@ -143,7 +164,7 @@ export default function LivrePolicePage() {
       [],
     ];
     const header = [
-      "N°", "Mouvement", "Date du mouvement", "Inscrit le", "Genre", "Marque", "Type",
+      "N°", "Mouvement", "Date du mouvement", "Inscrit le", "Genre", "Marque", "Dénomination", "Type",
       "Immatriculation", "VIN", "1re immat.", "Km", "Couleur", "Prix", "Paiement", "Destination",
       "Contrepartie", "Type contrepartie", "SIRET", "Adresse", "Pièce ID", "N° pièce", "Autorité",
       "Délivrée le", "État / Motif",
@@ -159,7 +180,7 @@ export default function LivrePolicePage() {
       return [
         ord(r), mvt, r.sens === "annulation" ? "" : mvtDate(r),
         new Date(r.recorded_at).toLocaleDateString("fr-FR"),
-        r.genre, r.marque, r.type, r.immat, r.vin, r.date_immat, r.km, r.couleur, r.prix, r.paiement,
+        r.genre, r.marque, r.denom, r.type, r.immat, r.vin, r.date_immat, r.km, r.couleur, r.prix, r.paiement,
         destLabel(r.destination), r.person_name, r.person_is_pro ? "Professionnel" : "Particulier",
         r.person_siret, r.person_address, r.id_type, r.id_number, r.id_authority, r.id_issue_date, etat,
       ];
@@ -276,7 +297,7 @@ export default function LivrePolicePage() {
                 {visible.map((r) => {
                   if (r.sens === "annulation") {
                     return (
-                      <tr key={r.id} className="border-b border-slate-800 bg-red-500/5 align-top last:border-0">
+                      <tr key={r.id} onClick={() => setSelected(r)} className="cursor-pointer border-b border-slate-800 bg-red-500/5 align-top transition last:border-0 hover:bg-red-500/10">
                         <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-400">{ord(r)}</td>
                         <td className="px-3 py-3">
                           <span className="rounded-md bg-red-500/15 px-2 py-1 text-xs font-semibold text-red-300">
@@ -299,7 +320,8 @@ export default function LivrePolicePage() {
                   return (
                     <tr
                       key={r.id}
-                      className={`border-b border-slate-800 align-top last:border-0 ${isCancelled ? "text-slate-400" : ""}`}
+                      onClick={() => setSelected(r)}
+                      className={`cursor-pointer border-b border-slate-800 align-top transition last:border-0 hover:bg-slate-800/40 ${isCancelled ? "text-slate-400" : ""}`}
                     >
                       <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-400">{ord(r)}</td>
                       <td className="px-3 py-3">
@@ -359,15 +381,21 @@ export default function LivrePolicePage() {
                         <p className="font-medium text-slate-200">{r.prix ? `${r.prix} €` : "—"}</p>
                         <p className="text-xs text-slate-400">{r.paiement}</p>
                       </td>
-                      <td className="px-3 py-3 print:hidden">
-                        {!isCancelled && (
-                          <button
-                            onClick={() => cancel(r)}
-                            className="rounded-lg border border-slate-800 px-2.5 py-1 text-xs text-slate-400 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
-                          >
-                            Annuler
-                          </button>
-                        )}
+                      <td className="whitespace-nowrap px-3 py-3 print:hidden">
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="text-xs font-medium text-accent">Détails</span>
+                          {!isCancelled && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                cancel(r);
+                              }}
+                              className="rounded-lg border border-slate-800 px-2.5 py-1 text-xs text-slate-400 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
+                            >
+                              Annuler
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -377,6 +405,93 @@ export default function LivrePolicePage() {
           </div>
         )}
       </main>
+
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-sm sm:items-center sm:p-4 print:hidden"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-slate-800 bg-slate-900 p-5 shadow-2xl sm:rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <p className="font-mono text-xs text-slate-400">N° {ord(selected)}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  <span
+                    className={`badge ${
+                      selected.sens === "entree"
+                        ? "badge-stock"
+                        : selected.sens === "sortie"
+                          ? "badge-vendu"
+                          : "bg-red-500/15 text-red-300"
+                    }`}
+                  >
+                    {selected.sens === "entree" ? "Entrée" : selected.sens === "sortie" ? "Sortie" : "Annulation"}
+                  </span>
+                  {cancelledBy.has(selected.id) && (
+                    <span className="text-xs font-semibold text-red-400">
+                      Annulée par n° {cancelledBy.get(selected.id)}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setSelected(null)}
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+                aria-label="Fermer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {selected.sens === "annulation" ? (
+              <DSection title="Annulation">
+                <DRow label="Motif" value={selected.motif} />
+                <DRow label="Véhicule concerné" value={[selected.marque, selected.immat].filter(Boolean).join(" · ")} />
+                <DRow label="Inscrite le" value={new Date(selected.recorded_at).toLocaleString("fr-FR")} />
+              </DSection>
+            ) : (
+              <>
+                <DSection title="Véhicule">
+                  <DRow label="Genre" value={selected.genre} />
+                  <DRow label="Marque" value={selected.marque} />
+                  <DRow label="Dénomination" value={selected.denom} />
+                  <DRow label="Type / version" value={selected.type} />
+                  <DRow label="Immatriculation" value={selected.immat} />
+                  <DRow label="VIN" value={selected.vin && <span className="font-mono">{selected.vin}</span>} />
+                  <DRow label="1re immatriculation" value={selected.date_immat} />
+                  <DRow label="Kilométrage" value={selected.km && `${selected.km} km`} />
+                  <DRow label="Couleur" value={selected.couleur} />
+                </DSection>
+
+                <DSection title="Mouvement">
+                  <DRow label={selected.sens === "entree" ? "Date d'entrée" : "Date de sortie"} value={mvtDate(selected)} />
+                  <DRow label="Inscrit le" value={new Date(selected.recorded_at).toLocaleString("fr-FR")} />
+                  {selected.sens === "sortie" && <DRow label="Destination" value={destLabel(selected.destination)} />}
+                </DSection>
+
+                <DSection title="Transaction">
+                  <DRow label="Prix" value={selected.prix && `${selected.prix} €`} />
+                  <DRow label="Règlement" value={selected.paiement} />
+                </DSection>
+
+                <DSection title={selected.sens === "entree" ? "Vendeur" : "Acheteur"}>
+                  <DRow label="Nom / raison sociale" value={selected.person_name} />
+                  <DRow label="Type" value={selected.person_is_pro ? "Professionnel" : "Particulier"} />
+                  <DRow label="SIRET" value={selected.person_siret} />
+                  <DRow label="Adresse" value={selected.person_address} />
+                  <DRow label="Pièce d'identité" value={selected.id_type} />
+                  <DRow label="N° de pièce" value={selected.id_number} />
+                  <DRow label="Autorité" value={selected.id_authority} />
+                  <DRow label="Délivrée le" value={selected.id_issue_date} />
+                </DSection>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

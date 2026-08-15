@@ -120,6 +120,7 @@ async function recordLivrePolice(
     dossier_id: dossierId,
     marque: v.marque ?? null,
     type: v.type ?? null,
+    denom: v.denom ?? null,
     vin: v.vin ?? null,
     immat: v.immat ?? null,
     date_immat: v.dateB ?? null,
