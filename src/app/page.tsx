@@ -96,11 +96,15 @@ async function recordLivrePolice(
     couleur: v.couleur ?? null,
     prix: dossier.cession.prix ?? null,
     paiement: dossier.cession.paiement ?? null,
+    destination:
+      dossier.operation === "vente" ? dossier.cession.sortieDestination ?? "vente" : null,
     person_name: p?.name ?? null,
     person_address: address,
-    id_type: p?.idType ?? null,
-    id_number: p?.idNumber ?? null,
-    id_authority: p?.idAuthority ?? null,
+    person_is_pro: p?.kind === "morale",
+    person_siret: p?.kind === "morale" ? p?.siret ?? null : null,
+    id_type: p?.kind === "morale" ? null : p?.idType ?? null,
+    id_number: p?.kind === "morale" ? null : p?.idNumber ?? null,
+    id_authority: p?.kind === "morale" ? null : p?.idAuthority ?? null,
   });
 }
 
@@ -460,6 +464,7 @@ export default function Home() {
             person={dossier.cession.seller}
             birth={operation === "achat"}
             idDoc={operation === "achat"}
+            allowPro={operation === "achat"}
             onField={(k, v) => upd((d) => ((d.cession.seller[k] as string | null) = v))}
           />
           <PersonGroup
@@ -467,6 +472,7 @@ export default function Home() {
             person={dossier.cession.buyer}
             birth
             idDoc={operation === "vente"}
+            allowPro={operation === "vente"}
             onField={(k, v) => upd((d) => ((d.cession.buyer[k] as string | null) = v))}
           />
 
@@ -500,6 +506,23 @@ export default function Home() {
                 <option>Espèces</option>
               </select>
             </label>
+            {operation === "vente" && (
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-slate-500">Destination (sortie)</span>
+                <select
+                  value={dossier.cession.sortieDestination ?? "vente"}
+                  onChange={(e) =>
+                    upd((d) => (d.cession.sortieDestination = e.target.value as typeof d.cession.sortieDestination))
+                  }
+                  className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                >
+                  <option value="vente">Vente</option>
+                  <option value="depot_vente">Dépôt-vente (fin)</option>
+                  <option value="restitution">Restitution</option>
+                  <option value="destruction">Destruction</option>
+                </select>
+              </label>
+            )}
             {dossier.cession.paiement === "Espèces" && (
               <p className="text-xs text-amber-700 sm:col-span-2 lg:col-span-3">
                 ⚠️ Paiement en espèces limité à 1 000 € (et interdit entre professionnels).
@@ -628,20 +651,33 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
   );
 }
 
-function PersonGroup({ title, person, birth, idDoc, onField }: { title: string; person: Person; birth?: boolean; idDoc?: boolean; onField: (k: keyof Person, v: string | null) => void }) {
+function PersonGroup({ title, person, birth, idDoc, allowPro, onField }: { title: string; person: Person; birth?: boolean; idDoc?: boolean; allowPro?: boolean; onField: (k: keyof Person, v: string | null) => void }) {
+  const isPro = person.kind === "morale";
   return (
     <Group title={title}>
-      <Field label="Nom et prénom" value={person.name} onChange={(v) => onField("name", v)} />
-      {birth && <Field label="Né(e) le" value={person.birthDate} onChange={(v) => onField("birthDate", v)} placeholder="JJ/MM/AAAA" />}
-      {birth && <Field label="À (lieu de naissance)" value={person.birthPlace} onChange={(v) => onField("birthPlace", v)} />}
+      {allowPro && (
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700 sm:col-span-2 lg:col-span-3">
+          <input
+            type="checkbox"
+            checked={isPro}
+            onChange={(e) => onField("kind", e.target.checked ? "morale" : "physique")}
+            className="h-4 w-4 accent-brand-600"
+          />
+          Contrepartie professionnelle (société)
+        </label>
+      )}
+      <Field label={isPro ? "Raison sociale" : "Nom et prénom"} value={person.name} onChange={(v) => onField("name", v)} />
+      {isPro && <Field label="SIRET" value={person.siret} onChange={(v) => onField("siret", v)} />}
+      {!isPro && birth && <Field label="Né(e) le" value={person.birthDate} onChange={(v) => onField("birthDate", v)} placeholder="JJ/MM/AAAA" />}
+      {!isPro && birth && <Field label="À (lieu de naissance)" value={person.birthPlace} onChange={(v) => onField("birthPlace", v)} />}
       <Field label="N° de voie" value={person.noVoie} onChange={(v) => onField("noVoie", v)} />
       <Field label="Type de voie" value={person.typeVoie} onChange={(v) => onField("typeVoie", v)} placeholder="RUE, AVENUE…" />
       <Field label="Nom de voie" value={person.nomVoie} onChange={(v) => onField("nomVoie", v)} />
       <Field label="Code postal" value={person.cp} onChange={(v) => onField("cp", v)} />
       <Field label="Commune" value={person.commune} onChange={(v) => onField("commune", v)} />
-      {idDoc && <Field label="Pièce d'identité" value={person.idType} onChange={(v) => onField("idType", v)} placeholder="CNI, Passeport…" />}
-      {idDoc && <Field label="N° de la pièce" value={person.idNumber} onChange={(v) => onField("idNumber", v)} />}
-      {idDoc && <Field label="Autorité de délivrance" value={person.idAuthority} onChange={(v) => onField("idAuthority", v)} />}
+      {!isPro && idDoc && <Field label="Pièce d'identité" value={person.idType} onChange={(v) => onField("idType", v)} placeholder="CNI, Passeport…" />}
+      {!isPro && idDoc && <Field label="N° de la pièce" value={person.idNumber} onChange={(v) => onField("idNumber", v)} />}
+      {!isPro && idDoc && <Field label="Autorité de délivrance" value={person.idAuthority} onChange={(v) => onField("idAuthority", v)} />}
     </Group>
   );
 }

@@ -36,6 +36,8 @@ export type Vehicle = {
 
 export type Cession = {
   destination?: "cession" | "destruction";
+  // Destination de sortie au livre de police (distinct du Cerfa).
+  sortieDestination?: "vente" | "depot_vente" | "restitution" | "destruction" | null;
   date?: string | null; // date de cession
   heure?: string | null;
   min?: string | null;
