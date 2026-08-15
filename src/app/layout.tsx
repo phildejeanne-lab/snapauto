@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { BottomNav } from "@/components/BottomNav";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jakarta = Plus_Jakarta_Sans({
@@ -21,7 +22,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" className={`${inter.variable} ${jakarta.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <div className="min-h-screen pb-24 sm:pb-28">{children}</div>
+        <BottomNav />
+      </body>
     </html>
   );
 }

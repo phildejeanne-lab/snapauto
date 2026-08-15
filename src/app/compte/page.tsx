@@ -80,16 +80,16 @@ export default function ComptePage() {
     <>
       <AppHeader />
       <main className="mx-auto max-w-2xl px-5 py-8">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-900">Mon espace professionnel</h1>
-      <p className="mb-6 text-sm text-slate-500">Vos informations, saisies une fois, pré-remplies sur vos documents.</p>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-100">Mon espace professionnel</h1>
+      <p className="mb-6 text-sm text-slate-400">Vos informations, saisies une fois, pré-remplies sur vos documents.</p>
 
-      {status === "loading" && <p className="text-sm text-slate-500">Chargement…</p>}
+      {status === "loading" && <p className="text-sm text-slate-400">Chargement…</p>}
       {status === "error" && !org && (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{msg}</p>
+        <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{msg}</p>
       )}
 
       {org && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">
             <F label="Raison sociale" value={org.name} onChange={(v) => set("name", v)} />
             <F label="SIRET / SIREN" value={org.siren} onChange={(v) => set("siren", v)} />
@@ -106,8 +106,8 @@ export default function ComptePage() {
             >
               {status === "saving" ? "Enregistrement…" : "Enregistrer"}
             </button>
-            {status === "saved" && <span className="text-sm font-medium text-emerald-600">Enregistré ✓</span>}
-            {status === "error" && <span className="text-sm text-red-600">{msg}</span>}
+            {status === "saved" && <span className="text-sm font-medium text-emerald-300">Enregistré ✓</span>}
+            {status === "error" && <span className="text-sm text-red-300">{msg}</span>}
           </div>
         </div>
       )}
@@ -119,11 +119,11 @@ export default function ComptePage() {
 function F({ label, value, onChange }: { label: string; value: string | null; onChange: (v: string | null) => void }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="text-xs font-medium text-slate-500">{label}</span>
+      <span className="text-xs font-medium text-slate-400">{label}</span>
       <input
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value || null)}
-        className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="input"
       />
     </label>
   );

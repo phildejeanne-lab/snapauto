@@ -116,9 +116,9 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
   }
 
   return (
-    <div className="mt-5 border-t border-slate-100 pt-4">
-      <h3 className="mb-1 text-sm font-semibold text-slate-800">Pièces du dossier</h3>
-      <p className="mb-3 text-xs text-slate-500">
+    <div className="mt-5 border-t border-slate-800 pt-4">
+      <h3 className="mb-1 text-sm font-semibold text-slate-200">Pièces du dossier</h3>
+      <p className="mb-3 text-xs text-slate-400">
         Permis, justificatif de domicile, mandat… Conservés dans le dossier puis effacés
         automatiquement environ 2 mois après l'opération.
       </p>
@@ -127,7 +127,7 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="rounded-lg border border-slate-300 px-2.5 py-2 text-sm outline-none focus:border-brand-500"
+          className="rounded-lg border border-slate-700 bg-slate-950/60 px-2.5 py-2 text-sm text-slate-100 outline-none focus:border-accent"
         >
           {TYPES.map((t) => (
             <option key={t.value} value={t.value}>
@@ -146,7 +146,7 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
         />
         <label
           htmlFor="dossier-doc-input"
-          className={`cursor-pointer rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 ${
+          className={`cursor-pointer rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-900/40 ${
             busy ? "pointer-events-none opacity-50" : ""
           }`}
         >
@@ -154,7 +154,7 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
         </label>
       </div>
 
-      {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mb-2 text-sm text-red-300">{error}</p>}
 
       {docs && docs.length === 0 && (
         <p className="text-sm text-slate-400">Aucune pièce jointe.</p>
@@ -165,14 +165,14 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
           {docs.map((d) => (
             <li
               key={d.id}
-              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5"
+              className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2.5"
             >
-              <span className="shrink-0 rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">
+              <span className="shrink-0 rounded-md bg-slate-800 px-2 py-1 text-xs font-semibold text-slate-300">
                 {typeLabel(d.type)}
               </span>
               <button
                 onClick={() => open(d)}
-                className="min-w-0 flex-1 truncate text-left text-sm text-brand-600 hover:underline"
+                className="min-w-0 flex-1 truncate text-left text-sm text-brand-400 hover:underline"
                 title={d.filename}
               >
                 {d.filename}
@@ -182,7 +182,7 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
                 onClick={() => remove(d)}
                 aria-label="Supprimer"
                 title="Supprimer"
-                className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1 text-sm text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                className="shrink-0 rounded-lg border border-slate-800 px-2.5 py-1 text-sm text-slate-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
               >
                 ✕
               </button>

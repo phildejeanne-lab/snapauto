@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8 space-y-3">
-      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed text-slate-600">{children}</div>
+      <h2 className="text-lg font-semibold text-slate-100">{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed text-slate-300">{children}</div>
     </section>
   );
 }
@@ -21,22 +21,22 @@ const CONTACT = "contact@snapauto.fr";
 export default function ConfidentialitePage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b border-slate-200/70 px-4 py-3">
+      <header className="border-b border-slate-800/70 px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Link href="/" className="transition hover:opacity-80">
             <Brand size={28} />
           </Link>
-          <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+          <Link href="/" className="text-sm text-slate-400 transition hover:text-slate-200">
             ← Retour
           </Link>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-100">
           Politique de confidentialité
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-400">
           Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
         </p>
 
@@ -47,12 +47,12 @@ export default function ConfidentialitePage() {
             et tenir le livre de police.
           </p>
           <p>
-            <span className="font-medium text-slate-800">Le professionnel utilisateur</span>{" "}
+            <span className="font-medium text-slate-200">Le professionnel utilisateur</span>{" "}
             (garage, négociant, mandataire) est <span className="font-medium">responsable de
             traitement</span> des données de ses clients qu'il saisit dans l'outil.
           </p>
           <p>
-            <span className="font-medium text-slate-800">SnapAuto</span> agit en qualité de{" "}
+            <span className="font-medium text-slate-200">SnapAuto</span> agit en qualité de{" "}
             <span className="font-medium">sous-traitant</span> : il traite ces données uniquement
             pour fournir le service, conformément aux instructions du professionnel.
           </p>
@@ -61,26 +61,26 @@ export default function ConfidentialitePage() {
         <Section title="2. Données traitées">
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              <span className="font-medium text-slate-800">Compte professionnel</span> : email,
+              <span className="font-medium text-slate-200">Compte professionnel</span> : email,
               informations de l'entreprise (raison sociale, adresse, SIREN…).
             </li>
             <li>
-              <span className="font-medium text-slate-800">Données de dossier</span> : informations
+              <span className="font-medium text-slate-200">Données de dossier</span> : informations
               du véhicule (immatriculation, VIN, caractéristiques) et des parties (nom, adresse,
               pièce d'identité), extraites des documents photographiés.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Transaction</span> : prix, mode de
+              <span className="font-medium text-slate-200">Transaction</span> : prix, mode de
               paiement, date.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Pièces jointes au dossier</span> :
+              <span className="font-medium text-slate-200">Pièces jointes au dossier</span> :
               documents que le professionnel choisit d'archiver (permis, justificatif de domicile,
               mandat…), stockés de façon sécurisée et cloisonnée par organisation.
             </li>
           </ul>
-          <p className="rounded-lg bg-slate-50 px-3 py-2">
-            📷 <span className="font-medium text-slate-800">Les photos d'analyse ne sont pas
+          <p className="rounded-lg bg-slate-900/40 px-3 py-2">
+            📷 <span className="font-medium text-slate-200">Les photos d'analyse ne sont pas
             conservées.</span>{" "}
             La carte grise et la pièce d'identité photographiées pour le pré-remplissage sont
             analysées puis écartées ; seules les données extraites sont enregistrées. Les pièces que
@@ -104,16 +104,16 @@ export default function ConfidentialitePage() {
           <p>Pour fonctionner, le service s'appuie sur des prestataires techniques :</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              <span className="font-medium text-slate-800">Anthropic</span> — analyse des documents
+              <span className="font-medium text-slate-200">Anthropic</span> — analyse des documents
               (extraction des informations depuis les photos). Les images ne sont pas utilisées
               pour entraîner de modèles.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Supabase</span> — hébergement de la base
+              <span className="font-medium text-slate-200">Supabase</span> — hébergement de la base
               de données (Union européenne) et authentification.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Vercel</span> — hébergement de
+              <span className="font-medium text-slate-200">Vercel</span> — hébergement de
               l'application.
             </li>
           </ul>
@@ -123,24 +123,24 @@ export default function ConfidentialitePage() {
         <Section title="5. Durée de conservation">
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              <span className="font-medium text-slate-800">Livre de police</span> : conservé
+              <span className="font-medium text-slate-200">Livre de police</span> : conservé
               conformément à l'obligation légale applicable aux registres de véhicules d'occasion.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Dossiers</span> : conservés le temps
+              <span className="font-medium text-slate-200">Dossiers</span> : conservés le temps
               nécessaire à l'opération et aux obligations comptables. Un dossier peut être supprimé
               par le professionnel à tout moment ; l'inscription minimale au livre de police est
               alors conservée pour répondre à l'obligation légale.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Pièces jointes au dossier</span>{" "}
+              <span className="font-medium text-slate-200">Pièces jointes au dossier</span>{" "}
               (permis, justificatif de domicile…) : conservées le temps de l'établissement de la
               carte grise, puis <span className="font-medium">effacées automatiquement environ
               2 mois après l'opération</span>. Elles peuvent aussi être supprimées manuellement à
               tout moment.
             </li>
             <li>
-              <span className="font-medium text-slate-800">Compte</span> : conservé tant que le
+              <span className="font-medium text-slate-200">Compte</span> : conservé tant que le
               compte est actif.
             </li>
           </ul>
@@ -154,7 +154,7 @@ export default function ConfidentialitePage() {
             relaiera la demande.
           </p>
           <p>
-            Contact : <span className="font-medium text-slate-800">{CONTACT}</span>. En cas de
+            Contact : <span className="font-medium text-slate-200">{CONTACT}</span>. En cas de
             désaccord, un recours peut être formé auprès de la CNIL (cnil.fr).
           </p>
         </Section>

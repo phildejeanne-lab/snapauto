@@ -382,7 +382,7 @@ export default function Home() {
             disabled={generating !== null}
             className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ${
               done
-                ? "border border-slate-200 bg-slate-100 text-slate-500 hover:bg-slate-200"
+                ? "border border-slate-800 bg-slate-800/40 text-slate-400"
                 : "bg-brand-600 text-white shadow-sm shadow-brand-600/25 hover:bg-brand-700"
             }`}
           >
@@ -396,10 +396,43 @@ export default function Home() {
   return (
     <>
       <AppHeader />
-      <main className="mx-auto max-w-5xl px-5 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-5 sm:py-8">
+
+      {viewMode === "edit" && !dossier && (
+        <div className="mb-6">
+          <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            Scanner un document
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Carte grise + pièce d'identité → vos Cerfa remplis en quelques secondes.
+          </p>
+        </div>
+      )}
+
+      {viewMode === "edit" && (
+        <ol className="mb-6 flex items-center gap-2 text-xs font-medium">
+          {[
+            { n: 1, label: "Scan", on: true },
+            { n: 2, label: "Vérifier", on: !!dossier },
+            { n: 3, label: "Documents", on: docs.length > 0 },
+          ].map((s, i) => (
+            <li key={s.n} className="flex flex-1 items-center gap-2">
+              <span
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${
+                  s.on ? "bg-gradient-to-br from-cyan-400 to-brand-500 text-slate-950" : "bg-slate-800 text-slate-500"
+                }`}
+              >
+                {s.n}
+              </span>
+              <span className={s.on ? "text-slate-200" : "text-slate-500"}>{s.label}</span>
+              {i < 2 && <span className={`h-px flex-1 ${s.on ? "bg-slate-700" : "bg-slate-800"}`} />}
+            </li>
+          ))}
+        </ol>
+      )}
 
       {linkTo && (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
           <strong>Reprise</strong> — ce dossier (achat) sera rattaché à la vente précédente. Dépose la carte grise
           &amp; la pièce d'identité du véhicule <strong>repris</strong>.
         </div>
@@ -407,35 +440,35 @@ export default function Home() {
 
       {/* Vue CONSULTATION d'un dossier enregistré */}
       {viewMode === "view" && dossier && (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="card p-5 shadow-xl shadow-black/20">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <span
                 className={`rounded-md px-2 py-1 text-xs font-semibold ${
-                  dossier.operation === "achat" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+                  dossier.operation === "achat" ? "badge-stock" : "badge-vendu"
                 }`}
               >
                 {dossier.operation === "achat" ? "Achat" : "Vente"}
               </span>
-              <h2 className="mt-2 text-lg font-bold text-slate-900">
+              <h2 className="mt-2 text-lg font-bold text-slate-100">
                 {[dossier.vehicle.marque, dossier.vehicle.denom].filter(Boolean).join(" ") || "Dossier"}
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-400">
                 {dossier.vehicle.immat ?? "—"} ·{" "}
                 {dossier.operation === "achat" ? "Vendeur" : "Acheteur"} :{" "}
                 {(dossier.operation === "achat" ? dossier.cession.seller.name : dossier.cession.buyer.name) ?? "—"}
               </p>
             </div>
-            <Link href="/dossiers" className="whitespace-nowrap text-sm font-medium text-brand-600 hover:underline">
+            <Link href="/dossiers" className="whitespace-nowrap text-sm font-medium text-brand-400 hover:underline">
               ← Mes dossiers
             </Link>
           </div>
 
-          <h3 className="mt-4 mb-1 text-sm font-semibold text-slate-800">Documents</h3>
-          <p className="mb-2 text-xs text-slate-500">Clique sur un document pour l'afficher (PDF).</p>
+          <h3 className="mt-4 mb-1 text-sm font-semibold text-slate-200">Documents</h3>
+          <p className="mb-2 text-xs text-slate-400">Clique sur un document pour l'afficher (PDF).</p>
           {documentsButtons}
 
-          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
+          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-800 pt-4">
             <button
               onClick={() => setViewMode("edit")}
               className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-700"
@@ -443,14 +476,14 @@ export default function Home() {
               ✎ Modifier / Réanalyser
             </button>
             {lpInfo ? (
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-emerald-300">
                 ✓ Inscrit au livre de police (n° {lpInfo.year}-{String(lpInfo.num).padStart(3, "0")})
               </span>
             ) : (
               <button
                 onClick={pushToLivrePolice}
                 disabled={pushing}
-                className="rounded-xl border border-brand-300 bg-brand-50 px-4 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-100 disabled:opacity-50"
+                className="rounded-xl border border-accent/50 bg-brand-500/15 px-4 py-2.5 text-sm font-semibold text-brand-200 transition hover:bg-brand-500/25 disabled:opacity-50"
               >
                 {pushing ? "Envoi…" : "📖 Envoyer au livre de police"}
               </button>
@@ -458,7 +491,7 @@ export default function Home() {
             {dossier.operation === "vente" && savedId && (
               <a
                 href={`/?reprise=${savedId}`}
-                className="rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-amber-600"
+                className="rounded-xl bg-amber-500/100 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-amber-600"
               >
                 + Ajouter la reprise
               </a>
@@ -471,8 +504,8 @@ export default function Home() {
 
       {/* Étape 1 : upload (mode édition) */}
       {viewMode === "edit" && (
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+      <section className="card p-5 shadow-xl shadow-black/20">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
           1 · Type d'opération
         </h2>
         <div className="mb-4 grid gap-2 sm:grid-cols-3">
@@ -486,8 +519,8 @@ export default function Home() {
               onClick={() => changeMode(m)}
               className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
                 mode === m
-                  ? "border-brand-600 bg-brand-50 text-brand-700"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+                  ? "border-accent/60 bg-brand-500/15 text-brand-200 shadow-lg shadow-brand-600/10"
+                  : "border-slate-800 bg-slate-900/40 text-slate-300 hover:border-slate-700"
               }`}
             >
               {label}
@@ -495,15 +528,15 @@ export default function Home() {
           ))}
         </div>
         {mode === "vente_reprise" && (
-          <p className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+          <p className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
             Reprise : on traite d'abord <strong>la vente</strong> ci-dessous. Pour le véhicule repris,
             tu créeras un 2ᵉ dossier « J'achète » (les deux seront liés une fois la sauvegarde des dossiers en place).
           </p>
         )}
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
           2 · Photos
         </h2>
-        <p className="mb-3 text-xs text-slate-500">
+        <p className="mb-3 text-xs text-slate-400">
           {operation === "achat"
             ? "Carte grise du véhicule + pièce d'identité du vendeur (le particulier)."
             : "Carte grise du véhicule + pièce d'identité de l'acheteur (le particulier)."}
@@ -515,24 +548,54 @@ export default function Home() {
         <button
           onClick={analyze}
           disabled={loading}
-          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
+          className="btn-cyan mt-5 w-full sm:w-auto"
         >
-          {loading ? "Analyse en cours…" : "Analyser"}
+          {loading ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900/40 border-t-slate-900" />
+              Analyse en cours…
+            </>
+          ) : (
+            <>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Analyser
+            </>
+          )}
         </button>
+
+        {loading && (
+          <div className="mt-5 space-y-3">
+            <div className="flex items-center gap-2 text-sm text-accent">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
+              Lecture du document · extraction du VIN…
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="skeleton h-3 w-20" />
+                  <div className="skeleton h-9 w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
       )}
 
       {error && (
-        <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {error}
         </p>
       )}
 
       {/* Étape 2 : formulaire (mode édition) */}
       {viewMode === "edit" && dossier && (
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="mt-6 card p-5 shadow-xl shadow-black/20">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
               2 · Vérifier &amp; compléter
             </h2>
             <button
@@ -541,7 +604,7 @@ export default function Home() {
                 setCniFile(null);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="text-sm font-medium text-brand-600 hover:underline"
+              className="text-sm font-medium text-brand-400 hover:underline"
             >
               ↑ Refaire l'analyse
             </button>
@@ -600,11 +663,11 @@ export default function Home() {
               onChange={(v) => upd((d) => (d.cession.prix = v))}
             />
             <label className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-slate-500">Mode de paiement</span>
+              <span className="text-xs font-medium text-slate-400">Mode de paiement</span>
               <select
                 value={dossier.cession.paiement ?? ""}
                 onChange={(e) => upd((d) => (d.cession.paiement = e.target.value || null))}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                className="input"
               >
                 <option value="">—</option>
                 <option>Virement</option>
@@ -615,13 +678,13 @@ export default function Home() {
             </label>
             {operation === "vente" && (
               <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-slate-500">Destination (sortie)</span>
+                <span className="text-xs font-medium text-slate-400">Destination (sortie)</span>
                 <select
                   value={dossier.cession.sortieDestination ?? "vente"}
                   onChange={(e) =>
                     upd((d) => (d.cession.sortieDestination = e.target.value as typeof d.cession.sortieDestination))
                   }
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                  className="input"
                 >
                   <option value="vente">Vente</option>
                   <option value="depot_vente">Dépôt-vente (fin)</option>
@@ -631,14 +694,14 @@ export default function Home() {
               </label>
             )}
             {dossier.cession.paiement === "Espèces" && (
-              <p className="text-xs text-amber-700 sm:col-span-2 lg:col-span-3">
+              <p className="text-xs text-amber-300 sm:col-span-2 lg:col-span-3">
                 ⚠️ Paiement en espèces limité à 1 000 € (et interdit entre professionnels).
               </p>
             )}
           </Group>
 
-          <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-slate-800">
+          <div className="mb-5 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-slate-200">
               <input
                 type="checkbox"
                 checked={includePro}
@@ -649,37 +712,37 @@ export default function Home() {
             </label>
             {includePro && dossier.pro && (
               dossier.pro.name ? (
-                <p className="mt-2 text-sm text-slate-600">
-                  <strong className="text-slate-800">{dossier.pro.name}</strong>
+                <p className="mt-2 text-sm text-slate-300">
+                  <strong className="text-slate-200">{dossier.pro.name}</strong>
                   {dossier.pro.siret && ` · SIRET ${dossier.pro.siret}`}
                   {(dossier.pro.nomVoie || dossier.pro.commune) &&
                     ` · ${[dossier.pro.noVoie, dossier.pro.typeVoie, dossier.pro.nomVoie].filter(Boolean).join(" ")} ${dossier.pro.cp ?? ""} ${dossier.pro.commune ?? ""}`}
                   {" — "}
-                  <Link href="/compte" className="font-medium text-brand-600 hover:underline">modifier dans Mon espace</Link>
+                  <Link href="/compte" className="font-medium text-brand-400 hover:underline">modifier dans Mon espace</Link>
                 </p>
               ) : (
-                <p className="mt-2 text-sm text-amber-700">
+                <p className="mt-2 text-sm text-amber-300">
                   Profil pro vide.{" "}
-                  <Link href="/compte" className="font-medium text-brand-600 hover:underline">Renseigne-le dans Mon espace</Link>.
+                  <Link href="/compte" className="font-medium text-brand-400 hover:underline">Renseigne-le dans Mon espace</Link>.
                 </p>
               )
             )}
           </div>
 
-          <h3 className="mt-6 mb-1 text-sm font-semibold text-slate-800">Documents</h3>
-          <p className="mb-2 text-xs text-slate-500">Clique pour générer et afficher le PDF (il s'ajoute plus bas).</p>
+          <h3 className="mt-6 mb-1 text-sm font-semibold text-slate-200">Documents</h3>
+          <p className="mb-2 text-xs text-slate-400">Clique pour générer et afficher le PDF (il s'ajoute plus bas).</p>
           {documentsButtons}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-800 pt-4">
             <button
               onClick={saveDossier}
               disabled={saving}
-              className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+              className="btn-ghost disabled:opacity-50"
             >
               {saving ? "Enregistrement…" : savedId ? "Enregistré ✓ — réenregistrer" : "Enregistrer le dossier"}
             </button>
             {lpInfo ? (
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700">
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-emerald-300">
                 ✓ Inscrit au livre de police (n° {lpInfo.year}-{String(lpInfo.num).padStart(3, "0")})
               </span>
             ) : (
@@ -694,13 +757,13 @@ export default function Home() {
             {savedId && operation === "vente" && !linkTo && (
               <a
                 href={`/?reprise=${savedId}`}
-                className="rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-amber-600"
+                className="rounded-xl bg-amber-500/100 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-amber-600"
               >
                 + Ajouter la reprise
               </a>
             )}
             {savedId && (
-              <Link href="/dossiers" className="text-sm font-medium text-brand-600 hover:underline">
+              <Link href="/dossiers" className="text-sm font-medium text-brand-400 hover:underline">
                 Voir mes dossiers →
               </Link>
             )}
@@ -709,7 +772,7 @@ export default function Home() {
           {savedId ? (
             <DossierDocuments dossierId={savedId} />
           ) : (
-            <p className="mt-5 border-t border-slate-100 pt-4 text-xs text-slate-400">
+            <p className="mt-5 border-t border-slate-800 pt-4 text-xs text-slate-400">
               Enregistre le dossier pour y joindre des pièces (permis, justificatif de domicile…).
             </p>
           )}
@@ -718,14 +781,14 @@ export default function Home() {
 
       {/* Documents générés — empilés */}
       {docs.map((doc) => (
-        <section key={doc.key} className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section key={doc.key} className="mt-6 card p-5 shadow-xl shadow-black/20">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">{doc.label}</h2>
-            <a href={doc.url} download={`${doc.key}.pdf`} className="text-sm font-medium text-brand-600 hover:underline">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">{doc.label}</h2>
+            <a href={doc.url} download={`${doc.key}.pdf`} className="text-sm font-medium text-brand-400 hover:underline">
               Télécharger
             </a>
           </div>
-          <iframe src={doc.url} className="h-[80vh] w-full rounded-lg border border-slate-200" />
+          <iframe src={doc.url} className="h-[80vh] w-full rounded-lg border border-slate-800 bg-white" />
         </section>
       ))}
       </main>
@@ -735,9 +798,36 @@ export default function Home() {
 
 function FileInput({ label, file, onChange }: { label: string; file: File | null; onChange: (f: File | null) => void }) {
   return (
-    <label className="flex cursor-pointer flex-col gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 transition hover:border-brand-400">
-      <span className="text-sm font-medium text-slate-700">{label}</span>
-      <span className="truncate text-xs text-slate-500">{file ? file.name : "Choisir une photo (JPG, PNG, PDF)"}</span>
+    <label
+      className={`flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed p-4 transition ${
+        file
+          ? "border-emerald-500/40 bg-emerald-500/5"
+          : "scan-frame border-accent/40 bg-slate-950/40 hover:border-accent hover:bg-slate-900/60"
+      }`}
+    >
+      <span
+        className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${
+          file ? "bg-emerald-500/15 text-emerald-300" : "bg-cyan-400/10 text-accent"
+        }`}
+      >
+        {file ? (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3l-1.5-2Z" />
+            <circle cx="12" cy="13" r="3.2" />
+          </svg>
+        )}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-slate-100">{label}</span>
+        <span className="block truncate text-xs text-slate-400">
+          {file ? file.name : "Prendre une photo ou choisir un fichier"}
+        </span>
+      </span>
+      {file && <span className="badge badge-vendu shrink-0">Détecté</span>}
       <input
         type="file"
         accept="image/*,application/pdf"
@@ -751,7 +841,7 @@ function FileInput({ label, file, onChange }: { label: string; file: File | null
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <h3 className="mb-2 text-sm font-semibold text-slate-800">{title}</h3>
+      <h3 className="mb-2 text-sm font-semibold text-slate-200">{title}</h3>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
     </div>
   );
@@ -760,12 +850,12 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 function Field({ label, value, onChange, placeholder }: { label: string; value: string | null | undefined; onChange: (v: string | null) => void; placeholder?: string }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="text-xs font-medium text-slate-500">{label}</span>
+      <span className="label">{label}</span>
       <input
         value={value ?? ""}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value || null)}
-        className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="input"
       />
     </label>
   );
@@ -776,7 +866,7 @@ function PersonGroup({ title, person, birth, idDoc, allowPro, onField }: { title
   return (
     <Group title={title}>
       {allowPro && (
-        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700 sm:col-span-2 lg:col-span-3">
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-200 sm:col-span-2 lg:col-span-3">
           <input
             type="checkbox"
             checked={isPro}

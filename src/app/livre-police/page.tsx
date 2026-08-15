@@ -58,6 +58,7 @@ export default function LivrePolicePage() {
   const [rows, setRows] = useState<Entry[] | null>(null);
   const [org, setOrg] = useState<Org | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [q, setQ] = useState("");
 
   async function load() {
     const supabase = createClient();
@@ -124,6 +125,14 @@ export default function LivrePolicePage() {
     ? [org.address_line, [org.postal_code, org.city].filter(Boolean).join(" ")].filter(Boolean).join(", ")
     : "";
 
+  const needle = q.trim().toLowerCase();
+  const visible = (rows ?? []).filter((r) => {
+    if (!needle) return true;
+    return [r.immat, r.vin, r.marque, r.type, r.person_name, r.genre]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(needle));
+  });
+
   function exportCsv() {
     if (!rows) return;
     const meta = [
@@ -169,16 +178,20 @@ export default function LivrePolicePage() {
 
   return (
     <>
-      <style>{`@media print { @page { size: A4 landscape; margin: 10mm; } }`}</style>
+      <style>{`@media print {
+        @page { size: A4 landscape; margin: 10mm; }
+        body { background: #fff !important; }
+        main, main * { color: #0f172a !important; background: transparent !important; border-color: #cbd5e1 !important; }
+      }`}</style>
       <AppHeader />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-5">
         <div className="mb-1 flex flex-wrap items-center justify-between gap-3 print:hidden">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Livre de police</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-100">Livre de police</h1>
           {rows && rows.length > 0 && (
             <div className="flex gap-2">
               <button
                 onClick={() => window.print()}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="rounded-xl border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-900/40"
               >
                 Imprimer / PDF
               </button>
@@ -191,41 +204,65 @@ export default function LivrePolicePage() {
             </div>
           )}
         </div>
-        <p className="mb-4 text-sm text-slate-500 print:hidden">
+        <p className="mb-4 text-sm text-slate-400 print:hidden">
           Registre des mouvements — inscrit automatiquement, numéroté, horodaté et non modifiable.
           Une erreur s'annule (elle n'est jamais supprimée).
         </p>
 
         {/* En-tête établissement (écran + impression) */}
-        <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 print:border-slate-300 print:bg-white">
-          <p className="text-base font-bold text-slate-900">
+        <div className="mb-4 rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3 print:border-slate-700 print:bg-white">
+          <p className="text-base font-bold text-slate-100">
             {org?.name || "Établissement"}
-            <span className="ml-2 text-sm font-normal text-slate-500 print:hidden">
-              — <a href="/compte" className="text-brand-600 hover:underline">modifier</a>
+            <span className="ml-2 text-sm font-normal text-slate-400 print:hidden">
+              — <a href="/compte" className="text-brand-400 hover:underline">modifier</a>
             </span>
           </p>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-300">
             {[orgAddress, org?.siren && `SIREN ${org.siren}`].filter(Boolean).join(" · ") || "—"}
           </p>
-          <p className="mt-0.5 hidden text-xs text-slate-500 print:block">
+          <p className="mt-0.5 hidden text-xs text-slate-400 print:block">
             Livre de police — registre des véhicules d'occasion · édité le{" "}
             {new Date().toLocaleDateString("fr-FR")}
           </p>
         </div>
 
-        {error && <p className="mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-        {!rows && !error && <p className="text-sm text-slate-500">Chargement…</p>}
+        {error && <p className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</p>}
+        {!rows && !error && (
+          <div className="space-y-2">
+            {Array.from({ length: 5 }).map((_, i) => <div key={i} className="skeleton h-14 w-full" />)}
+          </div>
+        )}
         {rows && rows.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-8 text-center text-sm text-slate-400">
             Registre vide. Les mouvements s'inscrivent dès que tu enregistres un dossier.
           </div>
         )}
 
         {rows && rows.length > 0 && (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
+          <div className="relative mb-3 print:hidden">
+            <svg className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Rechercher par plaque, VIN, modèle…"
+              className="input pl-10"
+            />
+          </div>
+        )}
+
+        {rows && rows.length > 0 && visible.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-8 text-center text-sm text-slate-400 print:hidden">
+            Aucun véhicule ne correspond à « {q} ».
+          </div>
+        )}
+
+        {rows && visible.length > 0 && (
+          <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/40 shadow-sm print:border-0 print:bg-white print:shadow-none">
             <table className="w-full min-w-[920px] text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wide text-slate-400">
                   <th className="px-3 py-3">N°</th>
                   <th className="px-3 py-3">Mvt</th>
                   <th className="px-3 py-3">Date</th>
@@ -236,20 +273,20 @@ export default function LivrePolicePage() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r) => {
+                {visible.map((r) => {
                   if (r.sens === "annulation") {
                     return (
-                      <tr key={r.id} className="border-b border-slate-100 bg-red-50/40 align-top last:border-0">
-                        <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-500">{ord(r)}</td>
+                      <tr key={r.id} className="border-b border-slate-800 bg-red-500/5 align-top last:border-0">
+                        <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-400">{ord(r)}</td>
                         <td className="px-3 py-3">
-                          <span className="rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
+                          <span className="rounded-md bg-red-500/15 px-2 py-1 text-xs font-semibold text-red-300">
                             Annulation
                           </span>
                         </td>
-                        <td className="whitespace-nowrap px-3 py-3 text-slate-600">
+                        <td className="whitespace-nowrap px-3 py-3 text-slate-300">
                           {new Date(r.recorded_at).toLocaleDateString("fr-FR")}
                         </td>
-                        <td className="px-3 py-3 text-slate-600" colSpan={3}>
+                        <td className="px-3 py-3 text-slate-300" colSpan={3}>
                           Annulation d'une écriture antérieure
                           {r.immat ? ` — ${r.immat}` : ""}
                           {r.motif ? ` · Motif : ${r.motif}` : ""}
@@ -262,47 +299,47 @@ export default function LivrePolicePage() {
                   return (
                     <tr
                       key={r.id}
-                      className={`border-b border-slate-100 align-top last:border-0 ${isCancelled ? "text-slate-400" : ""}`}
+                      className={`border-b border-slate-800 align-top last:border-0 ${isCancelled ? "text-slate-400" : ""}`}
                     >
-                      <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-500">{ord(r)}</td>
+                      <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-slate-400">{ord(r)}</td>
                       <td className="px-3 py-3">
                         <span
-                          className={`rounded-md px-2 py-1 text-xs font-semibold ${
-                            r.sens === "entree" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-                          } ${isCancelled ? "opacity-60" : ""}`}
+                          className={`badge ${r.sens === "entree" ? "badge-stock" : "badge-vendu"} ${
+                            isCancelled ? "opacity-60" : ""
+                          }`}
                         >
                           {r.sens === "entree" ? "Entrée" : "Sortie"}
                         </span>
                         {isCancelled && (
-                          <span className="mt-1 block text-xs font-semibold text-red-600">
+                          <span className="mt-1 block text-xs font-semibold text-red-400">
                             Annulée par n° {cancelledBy.get(r.id)}
                           </span>
                         )}
                       </td>
                       <td className="whitespace-nowrap px-3 py-3">
-                        <p className="text-slate-700">{mvtDate(r)}</p>
+                        <p className="text-slate-200">{mvtDate(r)}</p>
                         <p className="text-xs text-slate-400">inscrit le {new Date(r.recorded_at).toLocaleDateString("fr-FR")}</p>
                       </td>
                       <td className={`px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
-                        <p className="font-medium text-slate-800">{[r.marque, r.type].filter(Boolean).join(" ") || "—"}</p>
-                        <p className="text-xs text-slate-500">
+                        <p className="font-medium text-slate-200">{[r.marque, r.type].filter(Boolean).join(" ") || "—"}</p>
+                        <p className="text-xs text-slate-400">
                           {[r.immat, r.genre, r.couleur, r.km && `${r.km} km`].filter(Boolean).join(" · ")}
                         </p>
                         {r.vin && <p className="font-mono text-xs text-slate-400">{r.vin}</p>}
                         {r.sens === "sortie" && r.destination && (
-                          <p className="text-xs text-slate-500">Destination : {destLabel(r.destination)}</p>
+                          <p className="text-xs text-slate-400">Destination : {destLabel(r.destination)}</p>
                         )}
                       </td>
                       <td className={`px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
-                        <p className="font-medium text-slate-800">
+                        <p className="font-medium text-slate-200">
                           {r.person_name || "—"}
                           {r.person_is_pro && (
-                            <span className="ml-1 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">
+                            <span className="ml-1 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300">
                               PRO
                             </span>
                           )}
                         </p>
-                        <p className="text-xs text-slate-500">{r.person_address}</p>
+                        <p className="text-xs text-slate-400">{r.person_address}</p>
                         {r.person_is_pro
                           ? r.person_siret && <p className="text-xs text-slate-400">SIRET {r.person_siret}</p>
                           : (r.id_type || r.id_number) && (
@@ -319,14 +356,14 @@ export default function LivrePolicePage() {
                             )}
                       </td>
                       <td className={`whitespace-nowrap px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
-                        <p className="font-medium text-slate-800">{r.prix ? `${r.prix} €` : "—"}</p>
-                        <p className="text-xs text-slate-500">{r.paiement}</p>
+                        <p className="font-medium text-slate-200">{r.prix ? `${r.prix} €` : "—"}</p>
+                        <p className="text-xs text-slate-400">{r.paiement}</p>
                       </td>
                       <td className="px-3 py-3 print:hidden">
                         {!isCancelled && (
                           <button
                             onClick={() => cancel(r)}
-                            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                            className="rounded-lg border border-slate-800 px-2.5 py-1 text-xs text-slate-400 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
                           >
                             Annuler
                           </button>

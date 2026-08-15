@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <p className="text-sm text-slate-600">
-      <span className="font-medium text-slate-800">{label} : </span>
+    <p className="text-sm text-slate-300">
+      <span className="font-medium text-slate-200">{label} : </span>
       {children}
     </p>
   );
@@ -32,25 +32,25 @@ const EDITEUR = {
 export default function MentionsLegalesPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b border-slate-200/70 px-4 py-3">
+      <header className="border-b border-slate-800/70 px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Link href="/" className="transition hover:opacity-80">
             <Brand size={28} />
           </Link>
-          <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+          <Link href="/" className="text-sm text-slate-400 transition hover:text-slate-200">
             ← Retour
           </Link>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Mentions légales</h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-100">Mentions légales</h1>
+        <p className="mt-2 text-sm text-slate-400">
           Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}
         </p>
 
         <section className="mt-8 space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Éditeur du site</h2>
+          <h2 className="text-lg font-semibold text-slate-100">Éditeur du site</h2>
           <Field label="Éditeur">{EDITEUR.nom} — {EDITEUR.forme}</Field>
           <Field label="Nom commercial">{EDITEUR.nomCommercial}</Field>
           <Field label="SIREN">{EDITEUR.siren}</Field>
@@ -63,7 +63,7 @@ export default function MentionsLegalesPage() {
         </section>
 
         <section className="mt-8 space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Hébergement</h2>
+          <h2 className="text-lg font-semibold text-slate-100">Hébergement</h2>
           <Field label="Application">
             Vercel Inc. — 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis — vercel.com
           </Field>
@@ -73,8 +73,8 @@ export default function MentionsLegalesPage() {
         </section>
 
         <section className="mt-8 space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Propriété intellectuelle</h2>
-          <p className="text-sm text-slate-600">
+          <h2 className="text-lg font-semibold text-slate-100">Propriété intellectuelle</h2>
+          <p className="text-sm text-slate-300">
             L'ensemble des éléments du site (marque, logo, textes, interface) est protégé par le
             droit de la propriété intellectuelle. Toute reproduction sans autorisation est
             interdite.
@@ -82,10 +82,10 @@ export default function MentionsLegalesPage() {
         </section>
 
         <section className="mt-8 space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Données personnelles</h2>
-          <p className="text-sm text-slate-600">
+          <h2 className="text-lg font-semibold text-slate-100">Données personnelles</h2>
+          <p className="text-sm text-slate-300">
             Le traitement des données personnelles est détaillé dans notre{" "}
-            <Link href="/confidentialite" className="font-medium text-brand-600 hover:underline">
+            <Link href="/confidentialite" className="font-medium text-brand-400 hover:underline">
               politique de confidentialité
             </Link>
             .

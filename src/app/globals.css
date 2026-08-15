@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f8fc; /* fond doux bleuté */
-  --foreground: #0b132b; /* bleu nuit (texte) */
+  --background: #0b1120; /* bleu nuit profond */
+  --foreground: #f8fafc; /* texte fort contraste */
 }
 
 @theme inline {
@@ -11,25 +11,102 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-jakarta);
 
-  /* Marque — bleu royal du logo (#0F52BA) + accent cyan */
-  --color-brand-50: #eef4fc;
-  --color-brand-100: #d5e5f8;
-  --color-brand-200: #aecbf1;
-  --color-brand-300: #7ba8e6;
-  --color-brand-400: #4380d7;
-  --color-brand-500: #1c60c8;
-  --color-brand-600: #0f52ba;
-  --color-brand-700: #0d459c;
-  --color-brand-800: #0e3a80;
-  --color-brand-900: #10336a;
-  --color-brand-950: #0a1f44;
+  /* Marque — bleu royal électrique */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
 
+  /* Accent tech / scan — cyan néon */
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #06b6d4;
   --color-accent: #00d2ff;
-  --color-ink: #0b132b;
+
+  --color-ink: #0b1120;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* Halo tech discret en fond */
+  background-image:
+    radial-gradient(60rem 60rem at 100% -10%, rgba(0, 210, 255, 0.06), transparent 60%),
+    radial-gradient(50rem 50rem at -10% 10%, rgba(37, 99, 235, 0.08), transparent 55%);
+  background-attachment: fixed;
+}
+
+@layer components {
+  /* Cartes / surfaces */
+  .card {
+    @apply rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md;
+  }
+  .card-hover {
+    @apply transition hover:border-slate-700 hover:bg-slate-900/80;
+  }
+
+  /* Champs de formulaire */
+  .input {
+    @apply w-full rounded-xl border border-slate-700 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-accent focus:ring-2 focus:ring-cyan-500/20;
+  }
+  .label {
+    @apply text-xs font-medium text-slate-400;
+  }
+
+  /* Boutons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition active:scale-[0.98] hover:bg-brand-500 disabled:opacity-50;
+  }
+  .btn-cyan {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-brand-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition active:scale-[0.98] hover:from-cyan-300 hover:to-brand-400 disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/40 px-4 py-2.5 text-sm font-medium text-slate-200 transition active:scale-[0.98] hover:bg-slate-800;
+  }
+
+  /* Badges d'état */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold;
+  }
+  .badge-stock {
+    @apply bg-amber-400/15 text-amber-300;
+  }
+  .badge-vendu {
+    @apply bg-emerald-400/15 text-emerald-300;
+  }
+  .badge-info {
+    @apply bg-cyan-400/15 text-cyan-300;
+  }
+  .badge-ai {
+    @apply bg-brand-500/15 text-brand-300;
+  }
+}
+
+/* Halo pulsé du cadre de scan */
+@keyframes scanpulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.35), inset 0 0 24px rgba(0, 210, 255, 0.08); }
+  50% { box-shadow: 0 0 26px 4px rgba(0, 210, 255, 0.45), inset 0 0 34px rgba(0, 210, 255, 0.14); }
+}
+.scan-frame { animation: scanpulse 2.4s ease-in-out infinite; }
+
+/* Skeleton loader */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  @apply relative overflow-hidden rounded-lg bg-slate-800/60;
+}
+.skeleton::after {
+  content: "";
+  @apply absolute inset-0;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.12), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 1.5s infinite;
 }

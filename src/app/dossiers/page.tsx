@@ -52,58 +52,58 @@ export default function DossiersPage() {
       <AppHeader />
       <main className="mx-auto max-w-3xl px-5 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Mes dossiers</h1>
-        <Link
-          href="/"
-          className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700"
-        >
-          + Nouveau dossier
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">Dossiers</h1>
+          <p className="text-sm text-slate-400">Vos dossiers de cession enregistrés.</p>
+        </div>
+        <Link href="/" className="btn-cyan">
+          + Nouveau
         </Link>
       </div>
 
-      {error && <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-      {!rows && !error && <p className="text-sm text-slate-500">Chargement…</p>}
+      {error && <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</p>}
+      {!rows && !error && (
+        <ul className="flex flex-col gap-2">
+          {Array.from({ length: 4 }).map((_, i) => <li key={i} className="skeleton h-16 w-full" />)}
+        </ul>
+      )}
       {rows && rows.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+        <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-8 text-center text-sm text-slate-400">
           Aucun dossier enregistré pour l'instant.
           <br />
-          <Link href="/" className="mt-2 inline-block font-medium text-brand-600 hover:underline">Créer un premier dossier</Link>
+          <Link href="/" className="mt-2 inline-block font-medium text-accent hover:underline">Créer un premier dossier</Link>
         </div>
       )}
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2.5">
         {rows?.map((r) => (
           <li key={r.id} className="flex items-stretch gap-2">
             <Link
               href={`/?dossier=${r.id}`}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-brand-300 hover:shadow-sm"
+              className="card card-hover flex min-w-0 flex-1 items-center gap-3 px-4 py-3.5"
             >
-              <span
-                className={`shrink-0 rounded-md px-2 py-1 text-xs font-semibold ${
-                  r.operation === "achat" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-                }`}
-              >
+              <span className={`badge shrink-0 ${r.operation === "achat" ? "badge-stock" : "badge-vendu"}`}>
                 {r.operation === "achat" ? "Achat" : "Vente"}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-slate-800">{r.label || "Dossier"}</p>
-                <p className="truncate text-xs text-slate-500">
+                <p className="truncate text-sm font-semibold text-slate-100">{r.label || "Dossier"}</p>
+                <p className="truncate text-xs text-slate-400">
                   {r.immat ?? "—"} · {new Date(r.created_at).toLocaleDateString("fr-FR")}
                   {r.linked_dossier_id && " · lié à une reprise"}
                 </p>
               </div>
               {fmtPrix(r.prix) && (
-                <span className="shrink-0 whitespace-nowrap text-sm font-semibold text-slate-800">
+                <span className="shrink-0 whitespace-nowrap text-sm font-bold text-slate-100">
                   {fmtPrix(r.prix)}
                 </span>
               )}
-              <span className="hidden shrink-0 text-sm font-medium text-brand-600 sm:inline">Rouvrir →</span>
+              <span className="hidden shrink-0 text-sm font-medium text-accent sm:inline">Rouvrir →</span>
             </Link>
             <button
               onClick={() => remove(r.id)}
               title="Supprimer"
               aria-label="Supprimer"
-              className="shrink-0 rounded-xl border border-slate-200 px-3 text-sm text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+              className="shrink-0 rounded-xl border border-slate-800 px-3 text-sm text-slate-500 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
             >
               ✕
             </button>

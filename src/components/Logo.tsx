@@ -20,8 +20,8 @@ export function Brand({ size = 32, className = "" }: { size?: number; className?
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Logo size={size} />
-      <span className="font-display text-xl font-extrabold tracking-tight text-brand-700">
-        Snap<span className="text-brand-400">Auto</span>
+      <span className="font-display text-xl font-extrabold tracking-tight text-white">
+        Snap<span className="bg-gradient-to-r from-cyan-400 to-brand-400 bg-clip-text text-transparent">Auto</span>
       </span>
     </div>
   );
