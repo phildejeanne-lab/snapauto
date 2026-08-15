@@ -33,6 +33,7 @@ const idFrom = (cni: Cni | null) => ({
   idType: cni?.document_type ?? null,
   idNumber: cni?.document_number ?? null,
   idAuthority: cni?.issuing_authority ?? null,
+  idDate: cni?.issue_date ?? null,
 });
 
 /**
@@ -91,6 +92,7 @@ export function buildDossierFromExtraction(
     },
     cession: {
       destination: "cession",
+      dateMouvement: todayFR(),
       date: todayFR(),
       heure: null,
       min: null,

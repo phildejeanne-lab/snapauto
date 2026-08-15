@@ -16,6 +16,38 @@ const CERFAS = [
   { key: "13750", label: "Demande d'immatriculation" },
 ];
 
+// Redimensionne + réencode une image en JPEG (photos iPhone lourdes / HEIC → JPEG léger).
+// Évite la limite de taille Vercel (4,5 Mo) et fiabilise l'analyse.
+async function downscaleImage(file: File): Promise<Blob> {
+  const MAX = 2200; // dimension max (px)
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+  const width = Math.round(bitmap.width * scale);
+  const height = Math.round(bitmap.height * scale);
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas indisponible");
+  ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close?.();
+  return await new Promise<Blob>((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("échec toBlob"))), "image/jpeg", 0.85),
+  );
+}
+
+// Prépare un fichier pour l'envoi : PDF tel quel, image redimensionnée en JPEG
+// (repli sur l'original si le navigateur ne sait pas décoder l'image).
+async function prepareUpload(file: File): Promise<{ blob: Blob; name: string }> {
+  if (file.type === "application/pdf") return { blob: file, name: file.name };
+  try {
+    const blob = await downscaleImage(file);
+    return { blob, name: file.name.replace(/\.[^.]+$/, "") + ".jpg" };
+  } catch {
+    return { blob: file, name: file.name };
+  }
+}
+
 // Crée ou réutilise la fiche client (le particulier de l'opération) et renvoie son id.
 async function upsertContact(
   supabase: ReturnType<typeof createClient>,
@@ -98,6 +130,7 @@ async function recordLivrePolice(
     paiement: dossier.cession.paiement ?? null,
     destination:
       dossier.operation === "vente" ? dossier.cession.sortieDestination ?? "vente" : null,
+    date_mouvement: dossier.cession.dateMouvement ?? dossier.cession.date ?? null,
     person_name: p?.name ?? null,
     person_address: address,
     person_is_pro: p?.kind === "morale",
@@ -105,6 +138,7 @@ async function recordLivrePolice(
     id_type: p?.kind === "morale" ? null : p?.idType ?? null,
     id_number: p?.kind === "morale" ? null : p?.idNumber ?? null,
     id_authority: p?.kind === "morale" ? null : p?.idAuthority ?? null,
+    id_issue_date: p?.kind === "morale" ? null : p?.idDate ?? null,
   });
 }
 
@@ -118,6 +152,8 @@ export default function Home() {
   const [generating, setGenerating] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [lpInfo, setLpInfo] = useState<{ num: number; year: number } | null>(null); // registre : inscrit ?
+  const [pushing, setPushing] = useState(false);
   const [linkTo, setLinkTo] = useState<string | null>(null); // reprise liée à cette vente
   const [viewMode, setViewMode] = useState<"edit" | "view">("edit"); // view = dossier ouvert (docs), edit = analyse/formulaire
   const [includePro, setIncludePro] = useState(true);
@@ -144,6 +180,7 @@ export default function Home() {
         setSavedId(id);
         setMode(d.operation === "achat" ? "achat" : "vente");
         setViewMode("view"); // ouvrir un dossier = voir ses documents
+        await checkLivrePolice(supabase, id);
       }
     })();
   }, []);
@@ -189,10 +226,24 @@ export default function Home() {
     try {
       const fd = new FormData();
       fd.append("operation", operation);
-      if (cgFile) fd.append("carteGrise", cgFile);
-      if (cniFile) fd.append("cni", cniFile);
+      if (cgFile) {
+        const p = await prepareUpload(cgFile);
+        fd.append("carteGrise", p.blob, p.name);
+      }
+      if (cniFile) {
+        const p = await prepareUpload(cniFile);
+        fd.append("cni", p.blob, p.name);
+      }
       const res = await fetch("/api/extract", { method: "POST", body: fd });
-      const json: ExtractResponse = await res.json();
+      const raw = await res.text();
+      let json: ExtractResponse;
+      try {
+        json = JSON.parse(raw) as ExtractResponse;
+      } catch {
+        throw new Error(
+          `Réponse inattendue du serveur (${res.status}). ${raw.slice(0, 140) || "Réessaie."}`,
+        );
+      }
       if (!res.ok) throw new Error(json.error || "Échec de l'analyse.");
       setDossier(json.dossier);
     } catch (e) {
@@ -228,8 +279,25 @@ export default function Home() {
     }
   }
 
-  async function saveDossier() {
-    if (!dossier) return;
+  // Statut « déjà inscrit au livre de police ? » pour ce dossier.
+  async function checkLivrePolice(
+    supabase: ReturnType<typeof createClient>,
+    dossierId: string,
+  ) {
+    const { data } = await supabase
+      .from("livre_police")
+      .select("num, recorded_at")
+      .eq("dossier_id", dossierId)
+      .neq("sens", "annulation")
+      .limit(1)
+      .maybeSingle();
+    setLpInfo(
+      data ? { num: data.num as number, year: new Date(data.recorded_at as string).getFullYear() } : null,
+    );
+  }
+
+  async function saveDossier(): Promise<string | null> {
+    if (!dossier) return null;
     setSaving(true);
     setError(null);
     try {
@@ -270,13 +338,33 @@ export default function Home() {
         dossierId = data.id;
         setSavedId(data.id);
       }
-
-      // Livre de police : enregistre le mouvement (une seule fois par dossier).
-      if (dossierId) await recordLivrePolice(supabase, orgId, dossier, dossierId);
+      return dossierId;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur d'enregistrement.");
+      return null;
     } finally {
       setSaving(false);
+    }
+  }
+
+  // Le pro décide quand le dossier est complet : il l'envoie au livre de police.
+  async function pushToLivrePolice() {
+    if (!dossier) return;
+    setPushing(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { data: m } = await supabase.from("memberships").select("org_id").limit(1).maybeSingle();
+      if (!m?.org_id) throw new Error("Organisation introuvable.");
+      // On enregistre d'abord le dossier (données à jour), puis on l'inscrit.
+      const dossierId = (await saveDossier()) ?? savedId;
+      if (!dossierId) throw new Error("Enregistre le dossier d'abord.");
+      await recordLivrePolice(supabase, m.org_id, dossier, dossierId);
+      await checkLivrePolice(supabase, dossierId);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Échec de l'envoi au livre de police.");
+    } finally {
+      setPushing(false);
     }
   }
 
@@ -354,6 +442,19 @@ export default function Home() {
             >
               ✎ Modifier / Réanalyser
             </button>
+            {lpInfo ? (
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700">
+                ✓ Inscrit au livre de police (n° {lpInfo.year}-{String(lpInfo.num).padStart(3, "0")})
+              </span>
+            ) : (
+              <button
+                onClick={pushToLivrePolice}
+                disabled={pushing}
+                className="rounded-xl border border-brand-300 bg-brand-50 px-4 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-100 disabled:opacity-50"
+              >
+                {pushing ? "Envoi…" : "📖 Envoyer au livre de police"}
+              </button>
+            )}
             {dossier.operation === "vente" && savedId && (
               <a
                 href={`/?reprise=${savedId}`}
@@ -488,6 +589,12 @@ export default function Home() {
 
           <Group title="Transaction (livre de police)">
             <Field
+              label={operation === "achat" ? "Date d'entrée au parc" : "Date de sortie"}
+              value={dossier.cession.dateMouvement}
+              onChange={(v) => upd((d) => (d.cession.dateMouvement = v))}
+              placeholder="JJ/MM/AAAA"
+            />
+            <Field
               label={operation === "achat" ? "Prix d'achat (€)" : "Prix de vente TTC (€)"}
               value={dossier.cession.prix}
               onChange={(v) => upd((d) => (d.cession.prix = v))}
@@ -563,7 +670,7 @@ export default function Home() {
           <p className="mb-2 text-xs text-slate-500">Clique pour générer et afficher le PDF (il s'ajoute plus bas).</p>
           {documentsButtons}
 
-          <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
             <button
               onClick={saveDossier}
               disabled={saving}
@@ -571,6 +678,19 @@ export default function Home() {
             >
               {saving ? "Enregistrement…" : savedId ? "Enregistré ✓ — réenregistrer" : "Enregistrer le dossier"}
             </button>
+            {lpInfo ? (
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700">
+                ✓ Inscrit au livre de police (n° {lpInfo.year}-{String(lpInfo.num).padStart(3, "0")})
+              </span>
+            ) : (
+              <button
+                onClick={pushToLivrePolice}
+                disabled={pushing || saving}
+                className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700 disabled:opacity-50"
+              >
+                {pushing ? "Envoi…" : "📖 Envoyer au livre de police"}
+              </button>
+            )}
             {savedId && operation === "vente" && !linkTo && (
               <a
                 href={`/?reprise=${savedId}`}
@@ -678,6 +798,7 @@ function PersonGroup({ title, person, birth, idDoc, allowPro, onField }: { title
       {!isPro && idDoc && <Field label="Pièce d'identité" value={person.idType} onChange={(v) => onField("idType", v)} placeholder="CNI, Passeport…" />}
       {!isPro && idDoc && <Field label="N° de la pièce" value={person.idNumber} onChange={(v) => onField("idNumber", v)} />}
       {!isPro && idDoc && <Field label="Autorité de délivrance" value={person.idAuthority} onChange={(v) => onField("idAuthority", v)} />}
+      {!isPro && idDoc && <Field label="Délivrée le" value={person.idDate} onChange={(v) => onField("idDate", v)} placeholder="JJ/MM/AAAA" />}
     </Group>
   );
 }

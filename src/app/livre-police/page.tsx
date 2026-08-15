@@ -21,6 +21,7 @@ type Entry = {
   prix: string | null;
   paiement: string | null;
   destination: string | null;
+  date_mouvement: string | null;
   person_name: string | null;
   person_address: string | null;
   person_is_pro: boolean | null;
@@ -28,6 +29,7 @@ type Entry = {
   id_type: string | null;
   id_number: string | null;
   id_authority: string | null;
+  id_issue_date: string | null;
   cancels_id: string | null;
   motif: string | null;
 };
@@ -41,6 +43,8 @@ type Org = {
 };
 
 const ord = (r: Entry) => `${new Date(r.recorded_at).getFullYear()}-${String(r.num).padStart(3, "0")}`;
+// Date réelle du mouvement (entrée/sortie) ; à défaut, l'horodatage d'inscription.
+const mvtDate = (r: Entry) => r.date_mouvement || new Date(r.recorded_at).toLocaleDateString("fr-FR");
 
 const DEST: Record<string, string> = {
   vente: "Vente",
@@ -130,9 +134,10 @@ export default function LivrePolicePage() {
       [],
     ];
     const header = [
-      "N°", "Mouvement", "Date", "Genre", "Marque", "Type", "Immatriculation", "VIN", "1re immat.",
-      "Km", "Couleur", "Prix", "Paiement", "Destination", "Contrepartie", "Type contrepartie",
-      "SIRET", "Adresse", "Pièce ID", "N° pièce", "Autorité", "État / Motif",
+      "N°", "Mouvement", "Date du mouvement", "Inscrit le", "Genre", "Marque", "Type",
+      "Immatriculation", "VIN", "1re immat.", "Km", "Couleur", "Prix", "Paiement", "Destination",
+      "Contrepartie", "Type contrepartie", "SIRET", "Adresse", "Pièce ID", "N° pièce", "Autorité",
+      "Délivrée le", "État / Motif",
     ];
     const line = (r: Entry) => {
       const etat =
@@ -143,10 +148,11 @@ export default function LivrePolicePage() {
             : "";
       const mvt = r.sens === "entree" ? "Entrée" : r.sens === "sortie" ? "Sortie" : "Annulation";
       return [
-        ord(r), mvt, new Date(r.recorded_at).toLocaleDateString("fr-FR"),
+        ord(r), mvt, r.sens === "annulation" ? "" : mvtDate(r),
+        new Date(r.recorded_at).toLocaleDateString("fr-FR"),
         r.genre, r.marque, r.type, r.immat, r.vin, r.date_immat, r.km, r.couleur, r.prix, r.paiement,
         destLabel(r.destination), r.person_name, r.person_is_pro ? "Professionnel" : "Particulier",
-        r.person_siret, r.person_address, r.id_type, r.id_number, r.id_authority, etat,
+        r.person_siret, r.person_address, r.id_type, r.id_number, r.id_authority, r.id_issue_date, etat,
       ];
     };
     const rowsCsv = [...meta, header, ...rows.map(line)].map((cells) =>
@@ -274,7 +280,8 @@ export default function LivrePolicePage() {
                         )}
                       </td>
                       <td className="whitespace-nowrap px-3 py-3">
-                        {new Date(r.recorded_at).toLocaleDateString("fr-FR")}
+                        <p className="text-slate-700">{mvtDate(r)}</p>
+                        <p className="text-xs text-slate-400">inscrit le {new Date(r.recorded_at).toLocaleDateString("fr-FR")}</p>
                       </td>
                       <td className={`px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
                         <p className="font-medium text-slate-800">{[r.marque, r.type].filter(Boolean).join(" ") || "—"}</p>
@@ -300,7 +307,14 @@ export default function LivrePolicePage() {
                           ? r.person_siret && <p className="text-xs text-slate-400">SIRET {r.person_siret}</p>
                           : (r.id_type || r.id_number) && (
                               <p className="text-xs text-slate-400">
-                                {[r.id_type, r.id_number, r.id_authority].filter(Boolean).join(" · ")}
+                                {[
+                                  r.id_type,
+                                  r.id_number,
+                                  r.id_authority,
+                                  r.id_issue_date && `délivrée le ${r.id_issue_date}`,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ")}
                               </p>
                             )}
                       </td>

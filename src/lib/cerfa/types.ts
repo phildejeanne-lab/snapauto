@@ -18,6 +18,7 @@ export type Person = {
   idType?: string | null; // CNI, Passeport, Permis
   idNumber?: string | null;
   idAuthority?: string | null;
+  idDate?: string | null; // date de délivrance de la pièce
 };
 
 export type Vehicle = {
@@ -38,6 +39,8 @@ export type Cession = {
   destination?: "cession" | "destruction";
   // Destination de sortie au livre de police (distinct du Cerfa).
   sortieDestination?: "vente" | "depot_vente" | "restitution" | "destruction" | null;
+  // Date réelle du mouvement au livre de police (entrée au parc / sortie).
+  dateMouvement?: string | null;
   date?: string | null; // date de cession
   heure?: string | null;
   min?: string | null;
