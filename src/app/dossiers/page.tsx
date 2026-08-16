@@ -56,7 +56,7 @@ export default function DossiersPage() {
           <h1 className="text-2xl font-extrabold tracking-tight text-white">Dossiers</h1>
           <p className="text-sm text-slate-400">Vos dossiers de cession enregistrés.</p>
         </div>
-        <Link href="/" className="btn-cyan">
+        <Link href="/app" className="btn-cyan">
           + Nouveau
         </Link>
       </div>
@@ -71,7 +71,7 @@ export default function DossiersPage() {
         <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-8 text-center text-sm text-slate-400">
           Aucun dossier enregistré pour l'instant.
           <br />
-          <Link href="/" className="mt-2 inline-block font-medium text-accent hover:underline">Créer un premier dossier</Link>
+          <Link href="/app" className="mt-2 inline-block font-medium text-accent hover:underline">Créer un premier dossier</Link>
         </div>
       )}
 
@@ -79,7 +79,7 @@ export default function DossiersPage() {
         {rows?.map((r) => (
           <li key={r.id} className="flex items-stretch gap-2">
             <Link
-              href={`/?dossier=${r.id}`}
+              href={`/app?dossier=${r.id}`}
               className="card card-hover flex min-w-0 flex-1 items-center gap-3 px-4 py-3.5"
             >
               <span className={`badge shrink-0 ${r.operation === "achat" ? "badge-stock" : "badge-vendu"}`}>

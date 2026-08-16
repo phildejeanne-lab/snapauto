@@ -32,6 +32,7 @@ export async function proxy(request: NextRequest) {
   // Protection : rediriger vers /login si non connecté (hors pages publiques et API).
   const path = request.nextUrl.pathname;
   const isPublic =
+    path === "/" || // vitrine publique
     path.startsWith("/login") ||
     path.startsWith("/auth") ||
     path.startsWith("/api") ||

@@ -93,7 +93,7 @@ export default function ClientDetail() {
               {dossiers.map((d) => (
                 <li key={d.id}>
                   <Link
-                    href={`/?dossier=${d.id}`}
+                    href={`/app?dossier=${d.id}`}
                     className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 transition hover:border-brand-300 hover:shadow-sm"
                   >
                     <span

@@ -33,7 +33,7 @@ const I = {
 };
 
 const TABS: Tab[] = [
-  { href: "/", label: "Scan", icon: I.scan, match: (p) => p === "/" },
+  { href: "/app", label: "Scan", icon: I.scan, match: (p) => p === "/app" },
   { href: "/livre-police", label: "Registre", icon: I.register, match: (p) => p.startsWith("/livre-police") },
   { href: "/dossiers", label: "Dossiers", icon: I.docs, match: (p) => p.startsWith("/dossiers") || p.startsWith("/clients") },
   { href: "/compte", label: "Réglages", icon: I.gear, match: (p) => p.startsWith("/compte") },
@@ -42,6 +42,7 @@ const TABS: Tab[] = [
 export function BottomNav() {
   const pathname = usePathname() || "/";
   const hidden =
+    pathname === "/" || // vitrine
     pathname === "/login" ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/mentions-legales") ||
