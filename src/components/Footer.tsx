@@ -13,6 +13,10 @@ export function Footer() {
         <Link href="/confidentialite" className="transition hover:text-slate-300">
           Confidentialité
         </Link>
+        <span className="text-slate-300">·</span>
+        <Link href="/cgv" className="transition hover:text-slate-300">
+          CGV
+        </Link>
       </div>
     </footer>
   );

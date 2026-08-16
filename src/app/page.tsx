@@ -251,6 +251,7 @@ export default function Landing() {
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-slate-400">
             <Link href="/mentions-legales" className="transition hover:text-slate-200">Mentions légales</Link>
             <Link href="/confidentialite" className="transition hover:text-slate-200">Confidentialité (RGPD)</Link>
+            <Link href="/cgv" className="transition hover:text-slate-200">CGV</Link>
             <Link href="/login" className="transition hover:text-slate-200">Se connecter</Link>
           </div>
         </div>

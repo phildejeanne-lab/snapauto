@@ -37,7 +37,8 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/auth") ||
     path.startsWith("/api") ||
     path.startsWith("/mentions-legales") ||
-    path.startsWith("/confidentialite");
+    path.startsWith("/confidentialite") ||
+    path.startsWith("/cgv");
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
