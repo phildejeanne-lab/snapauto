@@ -12,11 +12,10 @@ const I = {
       <circle cx="12" cy="12" r="3.2" />
     </svg>
   ),
-  car: (
+  register: (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13" />
-      <path d="M4 13h16a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H9v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1Z" />
-      <circle cx="7.5" cy="15.5" r="1" /><circle cx="16.5" cy="15.5" r="1" />
+      <path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5.5A1.5 1.5 0 0 1 4 19.5Z" />
+      <path d="M4 17h16M8 7h8M8 11h8" />
     </svg>
   ),
   docs: (
@@ -35,7 +34,7 @@ const I = {
 
 const TABS: Tab[] = [
   { href: "/", label: "Scan", icon: I.scan, match: (p) => p === "/" },
-  { href: "/livre-police", label: "Stock VO", icon: I.car, match: (p) => p.startsWith("/livre-police") },
+  { href: "/livre-police", label: "Registre", icon: I.register, match: (p) => p.startsWith("/livre-police") },
   { href: "/dossiers", label: "Dossiers", icon: I.docs, match: (p) => p.startsWith("/dossiers") || p.startsWith("/clients") },
   { href: "/compte", label: "Réglages", icon: I.gear, match: (p) => p.startsWith("/compte") },
 ];
