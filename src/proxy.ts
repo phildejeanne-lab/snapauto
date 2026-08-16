@@ -34,6 +34,9 @@ export async function proxy(request: NextRequest) {
   const isPublic =
     path === "/" || // vitrine publique
     path.startsWith("/login") ||
+    path.startsWith("/signup") ||
+    path.startsWith("/mot-de-passe-oublie") ||
+    path.startsWith("/reset-password") ||
     path.startsWith("/auth") ||
     path.startsWith("/api") ||
     path.startsWith("/mentions-legales") ||

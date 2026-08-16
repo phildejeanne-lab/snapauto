@@ -44,6 +44,9 @@ export function BottomNav() {
   const hidden =
     pathname === "/" || // vitrine
     pathname === "/login" ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/mot-de-passe-oublie") ||
+    pathname.startsWith("/reset-password") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/mentions-legales") ||
     pathname.startsWith("/confidentialite");

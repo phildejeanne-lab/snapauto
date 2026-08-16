@@ -53,7 +53,7 @@ export default function Landing() {
             <Link href="/login" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-white sm:block">
               Se connecter
             </Link>
-            <Link href="/login" className="btn-cyan px-4 py-2 text-sm">Essai gratuit</Link>
+            <Link href="/signup" className="btn-cyan px-4 py-2 text-sm">Essai gratuit</Link>
           </div>
         </div>
       </header>
@@ -77,7 +77,7 @@ export default function Landing() {
               génération Cerfa instantanée et Livre de Police numérique pour marchands auto.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/login" className="btn-cyan">Démarrer l'essai gratuit (sans CB)</Link>
+              <Link href="/signup" className="btn-cyan">Démarrer l'essai gratuit (sans CB)</Link>
               <a href="#features" className="btn-ghost">
                 <Ic d={ico.play} className="h-4 w-4" /> Voir la démo 1 min
               </a>
@@ -198,7 +198,7 @@ export default function Landing() {
                   <li key={f} className="flex items-center gap-2"><Ic d={ico.check} className="h-4 w-4 text-emerald-400" />{f}</li>
                 ))}
               </ul>
-              <Link href="/login" className="btn-ghost mt-7 w-full">Commencer</Link>
+              <Link href="/signup" className="btn-ghost mt-7 w-full">Commencer</Link>
             </div>
             {/* Pro */}
             <div className="relative rounded-2xl border border-cyan-400/40 bg-slate-900/70 p-7 shadow-xl shadow-cyan-500/10 transition hover:-translate-y-1">
@@ -210,7 +210,7 @@ export default function Landing() {
                   <li key={f} className="flex items-center gap-2"><Ic d={ico.check} className="h-4 w-4 text-cyan-400" />{f}</li>
                 ))}
               </ul>
-              <Link href="/login" className="btn-cyan mt-7 w-full">Démarrer l'essai gratuit</Link>
+              <Link href="/signup" className="btn-cyan mt-7 w-full">Démarrer l'essai gratuit</Link>
             </div>
           </div>
         </div>
@@ -240,7 +240,7 @@ export default function Landing() {
           <p className="mx-auto mt-3 max-w-xl text-slate-300">
             Essayez SnapAuto gratuitement, sans carte bancaire. Votre premier Cerfa en moins de 2 minutes.
           </p>
-          <Link href="/login" className="btn-cyan mx-auto mt-7 w-full sm:w-auto">Démarrer l'essai gratuit</Link>
+          <Link href="/signup" className="btn-cyan mx-auto mt-7 w-full sm:w-auto">Démarrer l'essai gratuit</Link>
         </div>
       </section>
 
