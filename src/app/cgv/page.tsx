@@ -4,7 +4,7 @@ import { Brand } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Conditions Générales de Vente — SnapAuto",
+  title: "Conditions Générales de Vente, SnapAuto",
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -72,7 +72,7 @@ export default function CgvPage() {
           </p>
         </Section>
 
-        <Section title="3. Clientèle — service réservé aux professionnels">
+        <Section title="3. Clientèle, service réservé aux professionnels">
           <p>
             SnapAuto est exclusivement destiné à des{" "}
             <span className="font-medium text-slate-200">clients professionnels</span> (marchands de

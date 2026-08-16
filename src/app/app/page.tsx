@@ -307,14 +307,13 @@ export default function Home() {
       if (!m?.org_id) throw new Error("Organisation introuvable.");
       const orgId = m.org_id;
 
-      // Fiche client (le particulier de l'opération) — créée/réutilisée.
+      // Fiche client (le particulier de l'opération), créée/réutilisée.
       const contactId = await upsertContact(supabase, orgId, dossier);
 
       const c = dossier.cession;
+      const vehicleLabel = [dossier.vehicle.marque, dossier.vehicle.denom].filter(Boolean).join(" ");
       const label =
-        [dossier.vehicle.marque, dossier.vehicle.denom, "—", c.buyer.name ?? c.seller.name]
-          .filter(Boolean)
-          .join(" ") || "Dossier";
+        [vehicleLabel, c.buyer.name ?? c.seller.name].filter(Boolean).join(", ") || "Dossier";
       const fields = {
         operation: dossier.operation,
         immat: dossier.vehicle.immat,
@@ -387,7 +386,7 @@ export default function Home() {
                 : "bg-brand-600 text-white shadow-sm shadow-brand-600/25 hover:bg-brand-700"
             }`}
           >
-            {generating === c.key ? "Génération…" : done ? `✓ ${c.label} — régénérer` : c.label}
+            {generating === c.key ? "Génération…" : done ? `✓ ${c.label}, régénérer` : c.label}
           </button>
         );
       })}
@@ -434,7 +433,7 @@ export default function Home() {
 
       {linkTo && (
         <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-          <strong>Reprise</strong> — ce dossier (achat) sera rattaché à la vente précédente. Dépose la carte grise
+          <strong>Reprise</strong>, ce dossier (achat) sera rattaché à la vente précédente. Dépose la carte grise
           &amp; la pièce d'identité du véhicule <strong>repris</strong>.
         </div>
       )}
@@ -455,9 +454,9 @@ export default function Home() {
                 {[dossier.vehicle.marque, dossier.vehicle.denom].filter(Boolean).join(" ") || "Dossier"}
               </h2>
               <p className="text-sm text-slate-400">
-                {dossier.vehicle.immat ?? "—"} ·{" "}
+                {dossier.vehicle.immat ?? "-"} ·{" "}
                 {dossier.operation === "achat" ? "Vendeur" : "Acheteur"} :{" "}
-                {(dossier.operation === "achat" ? dossier.cession.seller.name : dossier.cession.buyer.name) ?? "—"}
+                {(dossier.operation === "achat" ? dossier.cession.seller.name : dossier.cession.buyer.name) ?? "-"}
               </p>
             </div>
             <Link href="/dossiers" className="whitespace-nowrap text-sm font-medium text-brand-400 hover:underline">
@@ -670,7 +669,7 @@ export default function Home() {
                 onChange={(e) => upd((d) => (d.cession.paiement = e.target.value || null))}
                 className="input"
               >
-                <option value="">—</option>
+                <option value="">, </option>
                 <option>Virement</option>
                 <option>Chèque</option>
                 <option>Carte bancaire</option>
@@ -718,7 +717,7 @@ export default function Home() {
                   {dossier.pro.siret && ` · SIRET ${dossier.pro.siret}`}
                   {(dossier.pro.nomVoie || dossier.pro.commune) &&
                     ` · ${[dossier.pro.noVoie, dossier.pro.typeVoie, dossier.pro.nomVoie].filter(Boolean).join(" ")} ${dossier.pro.cp ?? ""} ${dossier.pro.commune ?? ""}`}
-                  {" — "}
+                  {", "}
                   <Link href="/compte" className="font-medium text-brand-400 hover:underline">modifier dans Mon espace</Link>
                 </p>
               ) : (
@@ -740,7 +739,7 @@ export default function Home() {
               disabled={saving}
               className="btn-ghost disabled:opacity-50"
             >
-              {saving ? "Enregistrement…" : savedId ? "Enregistré ✓ — réenregistrer" : "Enregistrer le dossier"}
+              {saving ? "Enregistrement…" : savedId ? "Enregistré ✓, réenregistrer" : "Enregistrer le dossier"}
             </button>
             {lpInfo ? (
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-emerald-300">
@@ -780,7 +779,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* Documents générés — empilés */}
+      {/* Documents générés, empilés */}
       {docs.map((doc) => (
         <section key={doc.key} className="mt-6 card p-5 shadow-xl shadow-black/20">
           <div className="mb-3 flex items-center justify-between">

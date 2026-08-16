@@ -12,7 +12,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SnapAuto — Documents de cession auto",
+  title: "SnapAuto, Documents de cession auto",
   description:
     "Remplissez automatiquement les Cerfa de vente de véhicule d'occasion depuis une photo de la carte grise et de la carte d'identité.",
 };

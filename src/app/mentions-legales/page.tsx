@@ -4,7 +4,7 @@ import { Brand } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Mentions légales — SnapAuto",
+  title: "Mentions légales, SnapAuto",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -51,7 +51,7 @@ export default function MentionsLegalesPage() {
 
         <section className="mt-8 space-y-3">
           <h2 className="text-lg font-semibold text-slate-100">Éditeur du site</h2>
-          <Field label="Éditeur">{EDITEUR.nom} — {EDITEUR.forme}</Field>
+          <Field label="Éditeur">{EDITEUR.nom}, {EDITEUR.forme}</Field>
           <Field label="Nom commercial">{EDITEUR.nomCommercial}</Field>
           <Field label="SIREN">{EDITEUR.siren}</Field>
           <Field label="SIRET">{EDITEUR.siret}</Field>
@@ -65,10 +65,10 @@ export default function MentionsLegalesPage() {
         <section className="mt-8 space-y-3">
           <h2 className="text-lg font-semibold text-slate-100">Hébergement</h2>
           <Field label="Application">
-            Vercel Inc. — 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis — vercel.com
+            Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis, vercel.com
           </Field>
           <Field label="Base de données">
-            Supabase (hébergement dans l'Union européenne) — supabase.com
+            Supabase (hébergement dans l'Union européenne), supabase.com
           </Field>
         </section>
 

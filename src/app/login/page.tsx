@@ -55,7 +55,7 @@ export default function LoginPage() {
         ) : (
           <form onSubmit={sendLink} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-sm shadow-slate-200/50">
             <h2 className="mb-1 text-lg font-semibold text-slate-100">Connexion</h2>
-            <p className="mb-4 text-sm text-slate-400">Reçois un lien de connexion par email — sans mot de passe.</p>
+            <p className="mb-4 text-sm text-slate-400">Reçois un lien de connexion par email, sans mot de passe.</p>
             <p className="mb-4 text-xs text-slate-400">
               En vous connectant, vous acceptez notre{" "}
               <Link href="/confidentialite" className="text-brand-400 hover:underline">

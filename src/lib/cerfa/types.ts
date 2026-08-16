@@ -60,5 +60,5 @@ export type CerfaDossier = {
   operation: Operation; // achat = le pro achète ; vente = le pro vend
   vehicle: Vehicle;
   cession: Cession;
-  pro?: Person; // le professionnel — profil de l'org
+  pro?: Person; // le professionnel, profil de l'org
 };

@@ -4,7 +4,7 @@ import { Brand } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité — SnapAuto",
+  title: "Politique de confidentialité, SnapAuto",
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -91,12 +91,12 @@ export default function ConfidentialitePage() {
 
         <Section title="3. Finalités et base légale">
           <ul className="list-disc space-y-1 pl-5">
-            <li>Générer les documents de cession (Cerfa) — exécution du service.</li>
+            <li>Générer les documents de cession (Cerfa), exécution du service.</li>
             <li>
-              Tenir le livre de police — <span className="font-medium">obligation légale</span>{" "}
+              Tenir le livre de police, <span className="font-medium">obligation légale</span>{" "}
               (registre des véhicules d'occasion).
             </li>
-            <li>Gérer les comptes et sécuriser l'accès — intérêt légitime.</li>
+            <li>Gérer les comptes et sécuriser l'accès, intérêt légitime.</li>
           </ul>
         </Section>
 
@@ -104,16 +104,16 @@ export default function ConfidentialitePage() {
           <p>Pour fonctionner, le service s'appuie sur des prestataires techniques :</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              <span className="font-medium text-slate-200">Anthropic</span> — analyse des documents
+              <span className="font-medium text-slate-200">Anthropic</span>, analyse des documents
               (extraction des informations depuis les photos). Les images ne sont pas utilisées
               pour entraîner de modèles.
             </li>
             <li>
-              <span className="font-medium text-slate-200">Supabase</span> — hébergement de la base
+              <span className="font-medium text-slate-200">Supabase</span>, hébergement de la base
               de données (Union européenne) et authentification.
             </li>
             <li>
-              <span className="font-medium text-slate-200">Vercel</span> — hébergement de
+              <span className="font-medium text-slate-200">Vercel</span>, hébergement de
               l'application.
             </li>
           </ul>

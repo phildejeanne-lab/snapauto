@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Brand } from "@/components/Logo";
 
 export const metadata: Metadata = {
-  title: "SnapAuto — La paperasse VO simplifiée. Un snap, vos Cerfa sont prêts.",
+  title: "SnapAuto, La paperasse VO simplifiée. Un snap, vos Cerfa sont prêts.",
   description:
     "Passez de la carte grise au pack de vente complet en 30 secondes. OCR intelligent, génération Cerfa instantanée et Livre de Police numérique pour marchands auto et garagistes.",
 };
@@ -172,7 +172,7 @@ export default function Landing() {
           </h2>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <Feature icon={ico.scan} title="OCR carte grise instantané" wide
-              text="Extraction sans erreur du VIN, de l'immatriculation, marque, modèle et puissance. Vous vérifiez, vous validez — c'est tout." />
+              text="Extraction sans erreur du VIN, de l'immatriculation, marque, modèle et puissance. Vous vérifiez, vous validez, c'est tout." />
             <Feature icon={ico.file} title="Pack vente auto-généré"
               text="Cerfa 15776 (cession), 13751 (déclaration d'achat), mandat et facture édités automatiquement." />
             <Feature icon={ico.car} id="registre" title="Livre de police numérique"
@@ -224,7 +224,7 @@ export default function Landing() {
             <Faq q="Le livre de police est-il légal en cas de contrôle ?"
               a="Oui. Le registre est numéroté, horodaté et non modifiable (une erreur s'annule, elle ne se supprime jamais), conformément aux exigences de l'art. 321-7 du Code pénal. Il s'exporte en PDF pour être présenté lors d'un contrôle." />
             <Faq q="Combien de temps prend l'installation ?"
-              a="Aucune installation. SnapAuto est une application web accessible sur ordinateur, iPhone et Android — vous vous connectez en un clic, sans rien à télécharger." />
+              a="Aucune installation. SnapAuto est une application web accessible sur ordinateur, iPhone et Android, vous vous connectez en un clic, sans rien à télécharger." />
             <Faq q="Puis-je résilier à tout moment ?"
               a="Oui, l'abonnement est sans aucun engagement. Vous arrêtez quand vous voulez." />
             <Faq q="Mes données et celles de mes clients sont-elles protégées ?"
@@ -238,7 +238,7 @@ export default function Landing() {
         <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-brand-600/20 to-cyan-400/10 p-8 text-center sm:p-12">
           <h2 className="text-3xl font-extrabold tracking-tight text-white">Prêt à ranger la paperasse ?</h2>
           <p className="mx-auto mt-3 max-w-xl text-slate-300">
-            Essayez SnapAuto gratuitement — sans carte bancaire. Votre premier Cerfa en moins de 2 minutes.
+            Essayez SnapAuto gratuitement, sans carte bancaire. Votre premier Cerfa en moins de 2 minutes.
           </p>
           <Link href="/login" className="btn-cyan mx-auto mt-7 w-full sm:w-auto">Démarrer l'essai gratuit</Link>
         </div>

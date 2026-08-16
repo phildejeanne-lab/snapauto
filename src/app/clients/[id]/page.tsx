@@ -106,7 +106,7 @@ export default function ClientDetail() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-200">{d.label || "Dossier"}</p>
                       <p className="truncate text-xs text-slate-400">
-                        {d.immat ?? "—"} · {new Date(d.created_at).toLocaleDateString("fr-FR")}
+                        {d.immat ?? "-"} · {new Date(d.created_at).toLocaleDateString("fr-FR")}
                       </p>
                     </div>
                   </Link>
@@ -125,7 +125,7 @@ function Info({ label, value }: { label: string; value: string | null }) {
   return (
     <div>
       <p className="text-xs font-medium text-slate-400">{label}</p>
-      <p className="text-sm text-slate-200">{value || "—"}</p>
+      <p className="text-sm text-slate-200">{value || "-"}</p>
     </div>
   );
 }

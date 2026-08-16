@@ -72,7 +72,7 @@ export default function ClientsPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-200">{r.name || "Sans nom"}</p>
                   <p className="truncate text-xs text-slate-400">
-                    {r.commune ?? "—"}
+                    {r.commune ?? "-"}
                     {r.birth_date && ` · né(e) le ${r.birth_date}`}
                   </p>
                 </div>

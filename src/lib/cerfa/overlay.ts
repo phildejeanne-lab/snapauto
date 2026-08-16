@@ -17,7 +17,7 @@ export type TemplateKey = keyof typeof TEMPLATE_FILES;
 // converties en interne vers le repère pdf-lib (origine bas-gauche).
 export type DrawOp = {
   page: number; // index 0-based
-  x?: number; // depuis la gauche (pt) — texte simple, ou 1er centre de case si spacing
+  x?: number; // depuis la gauche (pt), texte simple, ou 1er centre de case si spacing
   y: number; // depuis le HAUT (pt)
   text: string | null | undefined;
   size?: number; // défaut 9

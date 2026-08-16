@@ -11,7 +11,7 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-jakarta);
 
-  /* Marque — bleu royal électrique */
+  /* Marque, bleu royal électrique */
   --color-brand-50: #eff6ff;
   --color-brand-100: #dbeafe;
   --color-brand-200: #bfdbfe;
@@ -24,7 +24,7 @@
   --color-brand-900: #1e3a8a;
   --color-brand-950: #172554;
 
-  /* Accent tech / scan — cyan néon */
+  /* Accent tech / scan, cyan néon */
   --color-accent-400: #22d3ee;
   --color-accent-500: #06b6d4;
   --color-accent: #00d2ff;

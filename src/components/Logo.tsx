@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-// Icône SnapAuto (S connecté + voiture, dégradé bleu→cyan) — extraite du logo de référence.
+// Icône SnapAuto (S connecté + voiture, dégradé bleu→cyan), extraite du logo de référence.
 const RATIO = 650 / 568; // largeur / hauteur de l'image
 
 export function Logo({ size = 34, className = "" }: { size?: number; className?: string }) {

@@ -1,7 +1,7 @@
 import type { CerfaDossier } from "./types";
 import type { DrawOp } from "./overlay";
 
-// Mandat à un professionnel de l'automobile (Cerfa 13757*03) — formulaire AcroForm.
+// Mandat à un professionnel de l'automobile (Cerfa 13757*03), formulaire AcroForm.
 // Mandant = le client (nouveau propriétaire qui mandate le pro).
 // Mandataire = le professionnel (org).
 

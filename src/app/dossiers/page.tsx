@@ -88,7 +88,7 @@ export default function DossiersPage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-slate-100">{r.label || "Dossier"}</p>
                 <p className="truncate text-xs text-slate-400">
-                  {r.immat ?? "—"} · {new Date(r.created_at).toLocaleDateString("fr-FR")}
+                  {r.immat ?? "-"} · {new Date(r.created_at).toLocaleDateString("fr-FR")}
                   {r.linked_dossier_id && " · lié à une reprise"}
                 </p>
               </div>

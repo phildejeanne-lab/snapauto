@@ -172,7 +172,7 @@ export default function LivrePolicePage() {
     const line = (r: Entry) => {
       const etat =
         r.sens === "annulation"
-          ? `Annulation du n° ${r.cancels_id ? "(voir ligne liée)" : ""} — ${r.motif ?? ""}`
+          ? `Annulation du n° ${r.cancels_id ? "(voir ligne liée)" : ""}, ${r.motif ?? ""}`
           : cancelledBy.has(r.id)
             ? `Annulée par n° ${cancelledBy.get(r.id)}`
             : "";
@@ -226,7 +226,7 @@ export default function LivrePolicePage() {
           )}
         </div>
         <p className="mb-4 text-sm text-slate-400 print:hidden">
-          Registre des mouvements — inscrit automatiquement, numéroté, horodaté et non modifiable.
+          Registre des mouvements, inscrit automatiquement, numéroté, horodaté et non modifiable.
           Une erreur s'annule (elle n'est jamais supprimée).
         </p>
 
@@ -235,14 +235,14 @@ export default function LivrePolicePage() {
           <p className="text-base font-bold text-slate-100">
             {org?.name || "Établissement"}
             <span className="ml-2 text-sm font-normal text-slate-400 print:hidden">
-              — <a href="/compte" className="text-brand-400 hover:underline">modifier</a>
+, <a href="/compte" className="text-brand-400 hover:underline">modifier</a>
             </span>
           </p>
           <p className="text-sm text-slate-300">
-            {[orgAddress, org?.siren && `SIREN ${org.siren}`].filter(Boolean).join(" · ") || "—"}
+            {[orgAddress, org?.siren && `SIREN ${org.siren}`].filter(Boolean).join(" · ") || "-"}
           </p>
           <p className="mt-0.5 hidden text-xs text-slate-400 print:block">
-            Livre de police — registre des véhicules d'occasion · édité le{" "}
+            Livre de police, registre des véhicules d'occasion · édité le{" "}
             {new Date().toLocaleDateString("fr-FR")}
           </p>
         </div>
@@ -309,7 +309,7 @@ export default function LivrePolicePage() {
                         </td>
                         <td className="px-3 py-3 text-slate-300" colSpan={3}>
                           Annulation d'une écriture antérieure
-                          {r.immat ? ` — ${r.immat}` : ""}
+                          {r.immat ? `, ${r.immat}` : ""}
                           {r.motif ? ` · Motif : ${r.motif}` : ""}
                         </td>
                         <td className="px-3 py-3 print:hidden"></td>
@@ -343,7 +343,7 @@ export default function LivrePolicePage() {
                         <p className="text-xs text-slate-400">inscrit le {new Date(r.recorded_at).toLocaleDateString("fr-FR")}</p>
                       </td>
                       <td className={`px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
-                        <p className="font-medium text-slate-200">{[r.marque, r.type].filter(Boolean).join(" ") || "—"}</p>
+                        <p className="font-medium text-slate-200">{[r.marque, r.type].filter(Boolean).join(" ") || "-"}</p>
                         <p className="text-xs text-slate-400">
                           {[r.immat, r.genre, r.couleur, r.km && `${r.km} km`].filter(Boolean).join(" · ")}
                         </p>
@@ -354,7 +354,7 @@ export default function LivrePolicePage() {
                       </td>
                       <td className={`px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
                         <p className="font-medium text-slate-200">
-                          {r.person_name || "—"}
+                          {r.person_name || "-"}
                           {r.person_is_pro && (
                             <span className="ml-1 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-semibold text-slate-300">
                               PRO
@@ -378,7 +378,7 @@ export default function LivrePolicePage() {
                             )}
                       </td>
                       <td className={`whitespace-nowrap px-3 py-3 ${isCancelled ? "line-through" : ""}`}>
-                        <p className="font-medium text-slate-200">{r.prix ? `${r.prix} €` : "—"}</p>
+                        <p className="font-medium text-slate-200">{r.prix ? `${r.prix} €` : "-"}</p>
                         <p className="text-xs text-slate-400">{r.paiement}</p>
                       </td>
                       <td className="whitespace-nowrap px-3 py-3 print:hidden">

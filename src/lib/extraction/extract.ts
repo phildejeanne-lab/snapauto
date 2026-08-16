@@ -33,7 +33,7 @@ const PROMPTS: Record<ExtractionKind, string> = {
     "- immatriculation = A\n" +
     "- first_registration = B\n" +
     "- cert_date = I\n" +
-    "- holder_last_name = nom de naissance du titulaire (C.1), le nom légal — PAS le nom d'usage/marital éventuel\n" +
+    "- holder_last_name = nom de naissance du titulaire (C.1), le nom légal, PAS le nom d'usage/marital éventuel\n" +
     "- holder_first_names = prénom(s) du titulaire (C.1) UNIQUEMENT, sans nom d'usage\n" +
     "- holder_address = C.3 (rue + code postal + commune)\n" +
     "- brand = D.1\n- type_variant_version = D.2\n- commercial_name = D.3\n- vin = E\n" +
@@ -129,7 +129,7 @@ export async function extractDocument<K extends ExtractionKind>(
   const parsed = schema.safeParse(toolUse.input);
   if (!parsed.success) {
     throw new Error(
-      "Extraction: sortie invalide — " + JSON.stringify(parsed.error.flatten()),
+      "Extraction: sortie invalide, " + JSON.stringify(parsed.error.flatten()),
     );
   }
   return parsed.data as ExtractResult<K>;

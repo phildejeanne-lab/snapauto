@@ -2,7 +2,7 @@ import type { DrawOp } from "./overlay";
 import type { CerfaDossier } from "./types";
 import { fillTemplate } from "./overlay";
 
-// Déclaration d'achat (Cerfa 13751*02) — PDF plat (version aplatie), overlay.
+// Déclaration d'achat (Cerfa 13751*02), PDF plat (version aplatie), overlay.
 // Déclarant "Je soussigné(e)" = le PROFESSIONNEL acheteur (org).
 // Section "Certificat de vente" (bas) = le vendeur (ancien propriétaire).
 

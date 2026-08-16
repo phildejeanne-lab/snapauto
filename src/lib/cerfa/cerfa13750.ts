@@ -2,7 +2,7 @@ import type { DrawOp } from "./overlay";
 import type { CerfaDossier } from "./types";
 import { fillTemplate } from "./overlay";
 
-// Demande de certificat d'immatriculation (Cerfa 13750*07) — overlay.
+// Demande de certificat d'immatriculation (Cerfa 13750*07), overlay.
 // Titulaire = le nouveau propriétaire (acheteur).
 
 const T = 8;
@@ -48,7 +48,7 @@ export function ops13750(d: CerfaDossier): DrawOp[] {
     cells(CP, 403, digits(t.cp)), // Code postal
     op(153, 403, t.commune), // Commune
 
-    // ===== Le titulaire — Fait à / Le =====
+    // ===== Le titulaire, Fait à / Le =====
     op(63, 722, t.commune, 5.5),
     op(122, 722, d.cession.date, 6),
   ];
