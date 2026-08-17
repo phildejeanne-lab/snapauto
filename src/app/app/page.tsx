@@ -621,7 +621,36 @@ export default function Home() {
             <Field label="N° de formule" value={dossier.vehicle.formule} onChange={(v) => upd((d) => (d.vehicle.formule = v))} />
             <Field label="Genre (J.1)" value={dossier.vehicle.genre} onChange={(v) => upd((d) => (d.vehicle.genre = v))} placeholder="VP, CTTE…" />
             <Field label="Couleur" value={dossier.vehicle.couleur} onChange={(v) => upd((d) => (d.vehicle.couleur = v))} placeholder="Livre de police" />
+            <label className="flex flex-col gap-1">
+              <span className="label">Provenance du véhicule</span>
+              <select
+                value={dossier.provenance ?? "france"}
+                onChange={(e) => upd((d) => (d.provenance = e.target.value as typeof d.provenance))}
+                className="input"
+              >
+                <option value="france">France</option>
+                <option value="belgique">Belgique</option>
+                <option value="luxembourg">Luxembourg</option>
+                <option value="autre_ue">Autre pays UE</option>
+              </select>
+            </label>
           </Group>
+
+          {(dossier.provenance ?? "france") !== "france" && (
+            <div className="mb-5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
+              <p className="font-semibold">Véhicule importé (UE) — documents obligatoires pour l'immatriculation en France :</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-200/90">
+                <li><strong>Quitus fiscal</strong> (Service des Impôts) — sans lui, le dossier est rejeté.</li>
+                <li><strong>Certificat de conformité européen (COC)</strong>.</li>
+                <li><strong>Carte grise étrangère</strong> originale + <strong>facture d'achat</strong>.</li>
+                <li>Contrôle technique valide (reconnu s'il vient de l'UE).</li>
+                <li>Immatriculation en France sous 1 mois (plaque WW pour rouler en attendant).</li>
+              </ul>
+              <p className="mt-2 text-xs text-amber-200/80">
+                Joins ces pièces dans « Pièces du dossier » ci-dessous (types dédiés : Quitus fiscal, COC, Carte grise étrangère, Facture).
+              </p>
+            </div>
+          )}
 
           <PersonGroup
             title="Vendeur (ancien propriétaire)"

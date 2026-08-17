@@ -13,6 +13,10 @@ const TYPES: { value: string; label: string }[] = [
   { value: "controle_technique", label: "Contrôle technique" },
   { value: "mandat", label: "Mandat" },
   { value: "certificat_cession", label: "Certificat de cession" },
+  { value: "facture", label: "Facture" },
+  { value: "quitus_fiscal", label: "Quitus fiscal (import)" },
+  { value: "coc", label: "Certificat de conformité (COC)" },
+  { value: "carte_grise_etrangere", label: "Carte grise étrangère" },
   { value: "autre", label: "Autre" },
 ];
 const typeLabel = (v: string) => TYPES.find((t) => t.value === v)?.label ?? "Autre";

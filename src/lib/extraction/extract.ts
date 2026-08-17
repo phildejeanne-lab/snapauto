@@ -27,7 +27,9 @@ export type SupportedMedia =
 
 const PROMPTS: Record<ExtractionKind, string> = {
   carte_grise:
-    "Photo d'un certificat d'immatriculation français (carte grise). " +
+    "Photo d'un certificat d'immatriculation (carte grise) d'un pays de l'Union européenne : " +
+    "France, Belgique, Luxembourg, ou autre pays de l'UE. Les codes sont HARMONISÉS dans toute l'UE " +
+    "(directive 1999/37/CE), utilise-les quel que soit le pays. " +
     "Recopie EXACTEMENT chaque valeur imprimée, sans interpréter les codes ni reformater. " +
     "Correspondance code → champ :\n" +
     "- immatriculation = A\n" +
@@ -41,7 +43,7 @@ const PROMPTS: Record<ExtractionKind, string> = {
     "- fuel = P.3 (garder le code exact, ex. EH)\n- fiscal_power = P.6\n- seats = S.1\n" +
     "- co2 = V.7 (NE PAS confondre avec Y.6)\n" +
     "- genre = J.1 (genre national, ex. VP, CTTE, CAM)\n" +
-    "- formula_number = numéro de formule du certificat (ex. 2024FD82667, format AAAA + lettres/chiffres), imprimé sur le document (souvent près du code-barres ou sur le coupon détachable en bas)\n" +
+    "- formula_number = numéro de formule du certificat (ex. 2024FD82667, format AAAA + lettres/chiffres), imprimé sur le document (souvent près du code-barres ou sur le coupon détachable en bas). SPÉCIFIQUE À LA FRANCE : mets null pour une carte grise étrangère (Belgique, Luxembourg…), elles n'ont pas de numéro de formule.\n" +
     "Mets null pour tout champ absent ou illisible.",
   cni:
     "Tu reçois la photo d'une pièce d'identité française : carte nationale d'identité (ancien ou nouveau format) OU passeport. " +

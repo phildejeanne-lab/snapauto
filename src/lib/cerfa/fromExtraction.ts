@@ -77,6 +77,7 @@ export function buildDossierFromExtraction(
 
   return {
     operation,
+    provenance: "france",
     vehicle: {
       immat: cg?.immatriculation ?? null,
       vin: cg?.vin ?? null,

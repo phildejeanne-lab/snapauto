@@ -56,8 +56,11 @@ export type Cession = {
 
 export type Operation = "achat" | "vente";
 
+export type Provenance = "france" | "belgique" | "luxembourg" | "autre_ue";
+
 export type CerfaDossier = {
   operation: Operation; // achat = le pro achète ; vente = le pro vend
+  provenance?: Provenance | null; // pays d'achat (import intracommunautaire)
   vehicle: Vehicle;
   cession: Cession;
   pro?: Person; // le professionnel, profil de l'org
