@@ -44,7 +44,16 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
   const [type, setType] = useState("justif_domicile");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{ url: string; doc: Doc } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Fermer la prévisualisation avec la touche Échap.
+  useEffect(() => {
+    if (!preview) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setPreview(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [preview]);
 
   async function refresh() {
     const supabase = createClient();
@@ -99,10 +108,11 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
   }
 
   async function open(doc: Doc) {
+    setError(null);
     const supabase = createClient();
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(doc.storage_path, 60);
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(doc.storage_path, 300);
     if (error) setError(error.message);
-    else if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener");
+    else if (data?.signedUrl) setPreview({ url: data.signedUrl, doc });
   }
 
   async function remove(doc: Doc) {
@@ -189,6 +199,49 @@ export function DossierDocuments({ dossierId }: { dossierId: string }) {
             </li>
           ))}
         </ul>
+      )}
+
+      {preview && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-0 backdrop-blur-sm sm:p-4"
+          onClick={() => setPreview(null)}
+        >
+          <div
+            className="flex h-full w-full max-w-3xl flex-col overflow-hidden bg-slate-900 sm:h-[88vh] sm:rounded-2xl sm:border sm:border-slate-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/80 px-4 py-3">
+              <p className="min-w-0 flex-1 truncate text-sm font-medium text-slate-100" title={preview.doc.filename}>
+                {preview.doc.filename}
+              </p>
+              <div className="flex shrink-0 items-center gap-2">
+                <a
+                  href={preview.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-slate-800"
+                >
+                  Ouvrir / Télécharger
+                </a>
+                <button
+                  onClick={() => setPreview(null)}
+                  aria-label="Fermer"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-1 items-center justify-center overflow-auto bg-slate-950/40 p-3">
+              {preview.doc.mime?.startsWith("image/") ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={preview.url} alt={preview.doc.filename} className="mx-auto max-h-full max-w-full rounded-lg object-contain" />
+              ) : (
+                <iframe src={preview.url} title={preview.doc.filename} className="h-full w-full rounded-lg bg-white" />
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
