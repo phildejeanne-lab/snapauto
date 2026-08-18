@@ -133,11 +133,16 @@ export default function ConfidentialitePage() {
               alors conservée pour répondre à l'obligation légale.
             </li>
             <li>
-              <span className="font-medium text-slate-200">Pièces jointes au dossier</span>{" "}
-              (permis, justificatif de domicile…) : conservées le temps de l'établissement de la
-              carte grise, puis <span className="font-medium">effacées automatiquement environ
-              2 mois après l'opération</span>. Elles peuvent aussi être supprimées manuellement à
-              tout moment.
+              <span className="font-medium text-slate-200">Pièces jointes au dossier</span> : la
+              durée dépend de la nature de la pièce. Les <span className="font-medium">pièces
+              d'identité</span> (CNI, permis, justificatif de domicile) sont effacées
+              automatiquement <span className="font-medium">environ 2 mois après l'opération</span>{" "}
+              (minimisation). Les <span className="font-medium">pièces du dossier d'immatriculation</span>{" "}
+              (carte grise, cession, facture, mandat…) peuvent être conservées jusqu'à{" "}
+              <span className="font-medium">5 ans</span> pour répondre aux obligations légales
+              d'archivage applicables aux professionnels de l'automobile. Chaque pièce est scellée
+              (empreinte d'intégrité) et tracée. Elles peuvent être supprimées manuellement à tout
+              moment.
             </li>
             <li>
               <span className="font-medium text-slate-200">Compte</span> : conservé tant que le
