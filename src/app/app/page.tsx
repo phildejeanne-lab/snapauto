@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/AppHeader";
 import { DossierDocuments } from "@/components/DossierDocuments";
@@ -143,7 +144,10 @@ async function recordLivrePolice(
   });
 }
 
-export default function Home() {
+function ScanApp() {
+  const searchParams = useSearchParams();
+  const dossierParam = searchParams.get("dossier");
+  const repriseParam = searchParams.get("reprise");
   const [cgFile, setCgFile] = useState<File | null>(null);
   const [cniFile, setCniFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -161,30 +165,47 @@ export default function Home() {
   const [mode, setMode] = useState<"vente" | "vente_reprise" | "achat">("vente");
   const operation: "achat" | "vente" = mode === "achat" ? "achat" : "vente";
 
-  // Réouverture (?dossier=<id>) ou démarrage d'une reprise liée (?reprise=<venteId>).
+  // Remet la page à un état de scan vierge.
+  function resetToScan() {
+    setDossier(null);
+    setSavedId(null);
+    setDocs([]);
+    setLpInfo(null);
+    setViewMode("edit");
+    setCgFile(null);
+    setCniFile(null);
+    setError(null);
+    setLinkTo(null);
+    setMode("vente");
+  }
+
+  // Réagit à l'URL : ?dossier=<id> ouvre un dossier, ?reprise=<venteId> démarre une reprise,
+  // sans paramètre = scan vierge (permet de revenir sur "Scan" depuis un dossier).
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const reprise = params.get("reprise");
-    if (reprise) {
+    if (repriseParam) {
+      resetToScan();
       setMode("achat"); // la reprise = le pro rachète le véhicule repris
-      setLinkTo(reprise);
+      setLinkTo(repriseParam);
       return;
     }
-    const id = params.get("dossier");
-    if (!id) return;
+    if (!dossierParam) {
+      resetToScan();
+      return;
+    }
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("dossiers").select("data").eq("id", id).maybeSingle();
+      const { data } = await supabase.from("dossiers").select("data").eq("id", dossierParam).maybeSingle();
       const d = data?.data as CerfaDossier | undefined;
       if (d) {
         setDossier(d);
-        setSavedId(id);
+        setSavedId(dossierParam);
         setMode(d.operation === "achat" ? "achat" : "vente");
         setViewMode("view"); // ouvrir un dossier = voir ses documents
-        await checkLivrePolice(supabase, id);
+        await checkLivrePolice(supabase, dossierParam);
       }
     })();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dossierParam, repriseParam]);
 
   // Changer d'opération : inverse vendeur/acheteur en direct si un dossier existe déjà.
   function changeMode(m: "vente" | "vente_reprise" | "achat") {
@@ -919,5 +940,13 @@ function PersonGroup({ title, person, birth, idDoc, allowPro, onField }: { title
       {!isPro && idDoc && <Field label="Autorité de délivrance" value={person.idAuthority} onChange={(v) => onField("idAuthority", v)} />}
       {!isPro && idDoc && <Field label="Délivrée le" value={person.idDate} onChange={(v) => onField("idDate", v)} placeholder="JJ/MM/AAAA" />}
     </Group>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <ScanApp />
+    </Suspense>
   );
 }
